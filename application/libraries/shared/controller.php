@@ -18,12 +18,22 @@ namespace Shared {
          * @readwrite
          */
         protected $_user;
+        
+        public function seo($params = array()) {
+            $seo = Registry::get("seo");
+            foreach ($params as $key => $value) {
+                $property = "set" . ucfirst($key);
+                $seo->$property($value);
+            }
+            $params["view"]->set("seo", $seo);
+        }
 
         /**
          * @protected
          */
         public function _admin() {
             if (!$this->user->admin) {
+                $this->setUser(false);
                 throw new Router\Exception\Controller("Not a valid admin user account");
             }
         }
@@ -39,9 +49,83 @@ namespace Shared {
             }
         }
 
+        /**
+         * @protected
+         */
+        public function _session() {
+            $user = $this->getUser();
+            if ($user) {
+                header("Location: /publisher.html");
+                exit();
+            }
+        }
+
         public static function redirect($url) {
             header("Location: {$url}");
             exit();
+        }
+
+        protected function log($message = "") {
+            $logfile = APP_PATH . "/logs/" . date("Y-m-d") . ".txt";
+            $new = file_exists($logfile) ? false : true;
+            if ($handle = fopen($logfile, 'a')) {
+                $timestamp = strftime("%Y-%m-%d %H:%M:%S", time() + 1800);
+                $content = "[{$timestamp}]{$message}\n";
+                fwrite($handle, $content);
+                fclose($handle);
+                if ($new) {
+                    chmod($logfile, 0755);
+                }
+            } else {
+                echo "Could not open log file for writing";
+            }
+        }
+
+        protected function changeDate($date, $day) {
+            return date_format(date_add(date_create($date),date_interval_create_from_date_string("{$day} day")), 'Y-m-d');;
+        }
+        
+        public function logout() {
+            $this->setUser(false);
+            self::redirect("/home");
+        }
+        
+        public function noview() {
+            $this->willRenderLayoutView = false;
+            $this->willRenderActionView = false;
+        }
+
+        public function JSONview() {
+            $this->willRenderLayoutView = false;
+            $this->defaultExtension = "json";
+        }
+        
+        /**
+         * The method checks whether a file has been uploaded. If it has, the method attempts to move the file to a permanent location.
+         * @param string $name
+         * @param string $type files or images
+         */
+        protected function _upload($name, $type = "images") {
+            $img_type = array(
+                'jpg' => 'image/jpeg',
+                'png' => 'image/png',
+                'gif' => 'image/gif',
+            );
+            if (isset($_FILES[$name])) {
+                $file = $_FILES[$name];
+                $path = APP_PATH . "/public/assets/uploads/{$type}/";
+                $extension = pathinfo($file["name"], PATHINFO_EXTENSION);
+                $filename = uniqid() . ".{$extension}";
+
+                $finfo = new finfo(FILEINFO_MIME_TYPE);
+                $ext = array_search($finfo->file($file['tmp_name']), $img_type, true);
+                if ($ext !== false) {
+                    if (move_uploaded_file($file["tmp_name"], $path . $filename)) {
+                        return $filename;
+                    }
+                }
+            }
+            return FALSE;
         }
 
         public function setUser($user) {
