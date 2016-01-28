@@ -4,10 +4,10 @@
 include("seo.php");
 
 $seo = new SEO(array(
-    "title" => "LikesBazar Affiliate Network",
-    "keywords" => "earn money, facebook page monetization",
-    "description" => "Welcome to Our Affiliate Network, we let you Monetize your platform through us, get paid with high rpm value in india.",
-    "author" => "LikesBazar Team",
+    "title" => "DinchakApps",
+    "keywords" => "fun, quiz, facebook game, test, activity on facebook, cool facebook post",
+    "description" => "We let you post cool stuff on facebook",
+    "author" => "DinchakApps",
     "robots" => "INDEX,FOLLOW",
     "photo" => CDN . "img/logo.png"
 ));
