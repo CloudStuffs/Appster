@@ -172,3 +172,26 @@ function today () {
     today = yyyy+'-'+mm+'-'+dd;
     return today;
 }
+
+function up (image) {
+    $.ajax({
+        url: '/auth/upload',
+        type: 'POST',
+        data: {image: image},
+    })
+    .done(function(data) {
+        console.log(data);
+    });
+}
+
+function readImage() {
+    if ( this.files && this.files[0] ) {
+        var FR = new FileReader();
+        FR.onload = function(e) {
+            $('#img').attr( "src", e.target.result );
+            $('#base').text( e.target.result );
+            up(e.target.result);
+        };       
+        FR.readAsDataURL( this.files[0] );
+    }
+}

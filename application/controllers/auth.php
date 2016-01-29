@@ -37,8 +37,20 @@ class Auth extends Controller {
             $this->setUser($user);
             $view->set("success", true);
         } else {
-            self::redirect("/home");
+            $view->set("success", false);
         }
     }
 
+    public function upload() {
+        $this->JSONview();
+        $view = $this->getActionView();
+
+        $data = RequestMethods::post("image");
+        $img = explode(",", $data);
+        $path = APP_PATH . "/public/assets/uploads/";
+        $filename = uniqid() . ".png";
+        if (file_put_contents($path.$filename,base64_decode($img[1]))) {
+            $view->set("path", CDN . "uploads/" . $filename);
+        }
+    }
 }

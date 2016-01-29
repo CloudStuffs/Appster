@@ -44,7 +44,7 @@ namespace Shared {
         public function _secure() {
             $user = $this->getUser();
             if (!$user) {
-                header("Location: /login.html");
+                header("Location: /home.html");
                 exit();
             }
         }
@@ -55,7 +55,7 @@ namespace Shared {
         public function _session() {
             $user = $this->getUser();
             if ($user) {
-                header("Location: /publisher.html");
+                header("Location: /profile.html");
                 exit();
             }
         }
