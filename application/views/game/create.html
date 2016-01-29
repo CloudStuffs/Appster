@@ -16,6 +16,15 @@
                         <span class="help-block">{echo Shared\Markup::errors($errors, "title")}</span>
                     </div>
                     <div class="form-group">
+                        <label>FB Login</label>
+                        <label class="radio-inline">
+                            <input type="radio" name="fblogin" value="true" checked=""> True
+                        </label>
+                        <label class="radio-inline">
+                            <input type="radio" name="fblogin" id="inlineRadio2" value="false"> False
+                        </label>
+                    </div>
+                    <div class="form-group">
                         <label>Description</label>
                         <textarea class="form-control" name="description" rows="3"></textarea>
                         <span class="help-block">{echo Shared\Markup::errors($errors, "description")}</span>
@@ -23,42 +32,11 @@
                     <div class="form-group">
                         <label>Base Image</label>
                         <input type="file" class="form-control" name="image">
-                        <span class="help-block" id="message">Image should be 650px X 315px{echo Shared\Markup::errors($errors, "image")}</span>
                         <img id="img" src="" />
-                        <div id="base"></div>
                     </div>
                     <hr>
                 </div>
-                <div class="panel panel-default panel-body">
-                    <div class="form-group">
-                        <label>Image</label>
-                        <input type="file" class="form-control" name="image">
-                        <span class="help-block">Image should be 650px X 315px{echo Shared\Markup::errors($errors, "image")}</span>
-                    </div>
-                    <hr>
-                    <label>Dimensions</label>
-                    <div class="form-inline">
-                        <div class="form-group">
-                            <div class="input-group">
-                                <div class="input-group-addon">IN</div>
-                                <input type="number" class="form-control" placeholder="India" name="rpm[IN]" required="" value="135">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <div class="input-group">
-                                <div class="input-group-addon">US</div>
-                                <input type="number" class="form-control" placeholder="United States" name="rpm[US]" required="" value="220">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <div class="input-group">
-                                <div class="input-group-addon">CA</div>
-                                <input type="number" class="form-control" placeholder="Canada" name="rpm[CA]" required="" value="220">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <input type="hidden" name="action" value="content">
+                <input type="hidden" name="action" value="campaign">
                 <button type="submit" class="btn btn-primary pull-right"><i class="fa fa-check-circle"></i> Create</button>
             </form>
         </div>
@@ -66,6 +44,6 @@
 </div>
 <script type="text/javascript">
 $(document).ready(function() {
-    $("input[type=file]").change( readImage );
+    $("input[type=file]").change(readImage);
 });
 </script>

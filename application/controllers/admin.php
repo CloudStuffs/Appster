@@ -152,7 +152,6 @@ class Admin extends Auth {
     /**
      * Edits the Value and redirects user back to Referer
      * 
-     * @before _secure, changeLayout, _admin
      * @param type $model
      * @param type $id
      * @param type $property

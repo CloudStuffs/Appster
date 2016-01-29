@@ -16,6 +16,25 @@ class Game extends Admin {
 	public function create() {
 		$this->seo(array("title" => "Create Game", "view" => $this->getLayoutView()));
         $view = $this->getActionView();
+        if (RequestMethods::post("action") == "campaign") {
+        	$campaign = new Campaign(array(
+        		"user_id" => $this->user->id,
+        		"title" => RequestMethods::post("title"),
+        		"image" => $this->_upload("image"),
+        		"description" => RequestMethods::post("description", ""),
+        		"fblogin" => RequestMethods::post("fblogin", true)
+        	));
+        	$campaign->save();
+        	self::redirect("/game/activity/".$campaign->id);
+        }
+	}
+
+	/**
+     * @before _secure, changeLayout, _admin
+     */
+	public function activity($campaign_id) {
+		$this->seo(array("title" => "Game Activity", "view" => $this->getLayoutView()));
+        $view = $this->getActionView();
 	}
 
 	/**
