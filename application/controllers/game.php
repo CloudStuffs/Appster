@@ -32,8 +32,8 @@ class Game extends Admin {
 	/**
      * @before _secure, changeLayout, _admin
      */
-	public function activity($campaign_id) {
-		$this->seo(array("title" => "Game Activity", "view" => $this->getLayoutView()));
+	public function content($campaign_id) {
+		$this->seo(array("title" => "Game Content", "view" => $this->getLayoutView()));
         $view = $this->getActionView();
 	}
 
@@ -43,6 +43,16 @@ class Game extends Admin {
 	public function all() {
 		$this->seo(array("title" => "All Items", "view" => $this->getLayoutView()));
         $view = $this->getActionView();
+        $limit = RequestMethods::get("limit", 10);
+        $page = RequestMethods::get("page", 1);
+
+        $campaigns = Campaign::all(array(), array("title", "image", "created"). "created", "desc", $limit, $page);
+        $count = Campaign::count();
+
+        $view->set("campaigns", $campaigns);
+        $view->set("count", $count);
+        $view->set("limit", $limit);
+        $view->set("page", $page);
 	}
 
 	/**
