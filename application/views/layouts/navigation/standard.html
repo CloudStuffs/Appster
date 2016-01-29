@@ -6,9 +6,19 @@
         <a class="navbar-brand page-scroll" href="/"><i class="ion-happy-outline"></i> DinchakApps</a>
         <div class="collapse navbar-toggleable-sm" id="collapsingNavbar">
             <ul class="nav navbar-nav pull-right">
+            {if($user)}
+                <li class="nav-item">
+                    <a class="nav-link">{$user->name}</a>
+                </li>
+            {/if}
+            {else}
                 <li class="nav-item">
                     <a class="nav-link page-scroll" data-toggle="modal" title="A free Bootstrap theme" href="#aboutModal">About</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="fbLogin">Login</a>
+                </li>
+            {/else}
             </ul>
         </div>
     </div>

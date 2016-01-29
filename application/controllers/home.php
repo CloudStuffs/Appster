@@ -20,5 +20,15 @@ class Home extends Controller {
         ));
     }
 
+    /**
+     * @before _secure
+     */
+    public function profile() {
+        $this->seo(array(
+            "title" => "Profile",
+            "view" => $this->getLayoutView()
+        ));
+        $view = $this->getActionView();
+    }
 
 }
