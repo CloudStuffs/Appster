@@ -16,19 +16,9 @@ class Admin extends Auth {
     public function index() {
         $this->seo(array("title" => "Dashboard", "view" => $this->getLayoutView()));
         $view = $this->getActionView();
-        $now = strftime("%Y-%m-%d", strtotime('now'));
-        $yesterday = strftime("%Y-%m-%d", strtotime('-1 day'));
-        $record = Stat::first(array(), array("created"), "created", "desc");
-        $latest = strftime("%Y-%m-%d", strtotime($record->created));
-
-        $database = Registry::get("database");
-        $total = $database->query()->from("stats", array("SUM(amount)" => "earn", "SUM(click)" => "clicks"))->all();
-        $payments = $database->query()->from("payments", array("SUM(amount)" => "payment"))->all();
         
+        $now = strftime("%Y-%m-%d", strtotime('now'));
         $view->set("now", $now);
-        $view->set("total", $total);
-        $view->set("payment", round($payments[0]["payment"], 2));
-        $view->set("yesterday", $yesterday);
     }
 
     /**

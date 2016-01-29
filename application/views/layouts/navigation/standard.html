@@ -10,6 +10,11 @@
                 <li class="nav-item">
                     <a class="nav-link">{$user->name}</a>
                 </li>
+                {if($user->admin)}
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin/index.html">Admin Panel</a>
+                    </li>
+                {/if}
             {/if}
             {else}
                 <li class="nav-item">

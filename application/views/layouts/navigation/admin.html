@@ -13,13 +13,13 @@
     <!-- /.navbar-header -->
 
     <ul class="nav navbar-top-links navbar-right">
-        <li><a href="/publisher"><i class="fa fa-bullhorn"></i> Publisher</a></li>
+        <li><a href="/"><i class="fa fa-smile-o"></i> Home</a></li>
         <li class="dropdown">
             <a class="dropdown-toggle" data-toggle="dropdown" href="#">
                 <i class="fa fa-user fa-fw"></i> {echo $user->name}  <i class="fa fa-caret-down"></i>
             </a>
             <ul class="dropdown-menu dropdown-user">
-                <li><a href="/publisher"><i class="fa fa-gear fa-fw"></i> Publisher</a></li>
+                <li><a href="/profile.html"><i class="fa fa-gear fa-fw"></i> Profile</a></li>
                 <li class="divider"></li>
                 <li><a href="/logout"><i class="fa fa-sign-out fa-fw"></i> Logout</a></li>
             </ul>
@@ -30,50 +30,23 @@
 <nav class="navbar-default navbar-static-side" role="navigation">
     <div class="sidebar-collapse">
         <ul class="nav" id="side-menu">
-            <li><a href="/admin"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a></li>
-            <li><a href="/admin/search"><i class="fa fa-search fa-fw"></i> Search</a></li>
+            <li><a href="/admin/index.html"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a></li>
+            <li><a href="/admin/search.html"><i class="fa fa-search fa-fw"></i> Search</a></li>
             <li>
                 <a href="#"><i class="fa fa-area-chart fa-fw"></i> Analytics<span class="fa arrow"></span></a>
                 <ul class="nav nav-second-level">
                     <li><a href="/admin/dataAnalysis">Data Analysis</a></li>
-                    <li><a href="/analytics/googl">Googl</a></li>
-                    <li><a href="/analytics/urlDebugger">URL Debugger</a></li>
-                    <li><a href="/analytics/clicks">Clicks</a></li>
+                    <li><a href="/analytics/campaigns">Campaign</a></li>
                 </ul>
             </li>
             <li>
-                <a href="#"><i class="fa fa-money fa-fw"></i> Finance<span class="fa arrow"></span></a>
-                <ul class="nav nav-second-level">
-                    <li><a href="/finance/pending">Pending</a></li>
-                    <li><a href="/finance/payments">Payments</a></li>
-                    <li><a href="/finance/earnings">Earnings</a></li>
-                </ul>
-            </li>
-            <li>
-                <a href="#"><i class="fa fa-folder fa-fw"></i> Contents<span class="fa arrow"></span></a>
+                <a href="#"><i class="fa fa-bullhorn fa-fw"></i> Contents<span class="fa arrow"></span></a>
                 <ul class="nav nav-second-level">
                     <li><a href="/content/create">Create</a></li>
                     <li><a href="/content/all">Manage</a></li>
                     <li><a href="/content/shortenURL">Shorten URL</a></li>
                 </ul>
             </li>
-            <li>
-                <a href="#"><i class="fa fa-bookmark fa-fw"></i> Management<span class="fa arrow"></span></a>
-                <ul class="nav nav-second-level">
-                    <li><a href="/content/domains">Domains</a></li>
-                    <li><a href="/publisher/fraud">Fraud</a></li>
-                    <li><a href="/application/libraries/MongoDB/admin.php?db=stats&collection=hits">Verified</a></li>
-                </ul>
-            </li>
-            <li>
-                <a href="#"><i class="fa fa-bullhorn fa-fw"></i> Publishers<span class="fa arrow"></span></a>
-                <ul class="nav nav-second-level">
-                    <li><a href="/publisher/all">Publishers</a></li>
-                    <li><a href="/publisher/news">Publish News</a></li>
-                    <li><a href="/publisher/settings">Settings</a></li>
-                </ul>
-            </li>
-            <li><a href="/analytics/logs"><i class="fa fa-file-archive-o fa-fw"></i> Logs</a></li>
         </ul>
     </div>
 </nav>
