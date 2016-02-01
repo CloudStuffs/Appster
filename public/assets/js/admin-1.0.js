@@ -189,14 +189,21 @@ function readImage() {
 
 $('#img').click(function(e) {
     var offset = $(this).offset();
-    var src_x = e.pageX - offset.left,
-        src_y = e.pageY - offset.top;
-    var d = $("input[name=src_x]").val();
-    if (d > 0) {
-        $("input[name=txt_x]").val(src_x);
-        $("input[name=txt_y]").val(src_y);
-    } else{
-        $("input[name=src_x]").val(src_x);
-        $("input[name=src_y]").val(src_y);
-    };
+    var x = e.pageX - offset.left,
+        y = e.pageY - offset.top;
+    
+    if($('input[value=src]').is(':checked')) {
+        $("input[name=src_x]").val(x);
+        $("input[name=src_y]").val(y);
+    }
+
+    if($('input[value=txt]').is(':checked')) {
+        $("input[name=txt_x]").val(x);
+        $("input[name=txt_y]").val(y);
+    }
+
+    if($('input[value=usr]').is(':checked')) {
+        $("input[name=usr_x]").val(x);
+        $("input[name=usr_y]").val(y);
+    }
 });
