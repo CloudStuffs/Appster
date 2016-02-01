@@ -1,72 +1,72 @@
-(function (window) {
+(function(window) {
 
-    var Model = (function () {
+    var Model = (function() {
         function Model(opts) {
             this.api = window.location.origin + '/';
             this.ext = '.json';
         }
 
         Model.prototype = {
-            create: function (opts) {
+            create: function(opts) {
                 var self = this,
-                        link = this._clean(this.api) + this._clean(opts.action) + this._clean(this.ext);
+                    link = this._clean(this.api) + this._clean(opts.action) + this._clean(this.ext);
                 $.ajax({
                     url: link,
                     type: 'POST',
                     data: opts.data,
-                }).done(function (data) {
+                }).done(function(data) {
                     if (opts.callback) {
                         opts.callback.call(self, data);
                     }
-                }).fail(function () {
+                }).fail(function() {
                     console.log("error");
-                }).always(function () {
+                }).always(function() {
                     //console.log("complete");
                 });
             },
-            read: function (opts) {
+            read: function(opts) {
                 var self = this,
-                        link = this._clean(this.api) + this._clean(opts.action) + this._clean(this.ext);
+                    link = this._clean(this.api) + this._clean(opts.action) + this._clean(this.ext);
                 $.ajax({
                     url: link,
                     type: 'GET',
                     data: opts.data,
-                }).done(function (data) {
+                }).done(function(data) {
                     if (opts.callback) {
                         opts.callback.call(self, data);
                     }
-                }).fail(function () {
+                }).fail(function() {
                     console.log("error");
-                }).always(function () {
+                }).always(function() {
                     //console.log("complete");
                 });
 
             },
-            _clean: function (entity) {
+            _clean: function(entity) {
                 return entity || "";
             }
         };
         return Model;
     }());
 
-    Model.initialize = function (opts) {
+    Model.initialize = function(opts) {
         return new Model(opts);
     };
 
     window.Model = Model;
 }(window));
 
-(function (window, Model) {
+(function(window, Model) {
     window.request = Model.initialize();
     window.opts = {};
 }(window, window.Model));
 
-$(function () {
+$(function() {
     $('#side-menu').metisMenu();
 });
 
-$(function () {
-    $('select[value]').each(function () {
+$(function() {
+    $('select[value]').each(function() {
         $(this).val(this.getAttribute("value"));
     });
 });
@@ -74,8 +74,8 @@ $(function () {
 //Loads the correct sidebar on window load,
 //collapses the sidebar on window resize.
 // Sets the min-height of #page-wrapper to window size
-$(function () {
-    $(window).bind("load resize", function () {
+$(function() {
+    $(window).bind("load resize", function() {
         topOffset = 50;
         width = (this.window.innerWidth > 0) ? this.window.innerWidth : this.screen.width;
         if (width < 768) {
@@ -95,7 +95,7 @@ $(function () {
     });
 
     var url = window.location;
-    var element = $('ul.nav a').filter(function () {
+    var element = $('ul.nav a').filter(function() {
         return this.href == url || url.href.indexOf(this.href) == 0;
     }).addClass('active').parent().parent().addClass('in').parent();
     if (element.is('li')) {
@@ -103,22 +103,22 @@ $(function () {
     }
 });
 
-$(document).ready(function () {
+$(document).ready(function() {
 
     //initialize beautiful datetime picker
     $("input[type=date]").datepicker();
     $("input[type=date]").datepicker("option", "dateFormat", "yy-mm-dd");
-    var dateFormat = $("input[type=date]").datepicker( "option", "dateFormat" );
-    $("input[type=date]").datepicker( "option", "dateFormat", "yy-mm-dd" );
+    var dateFormat = $("input[type=date]").datepicker("option", "dateFormat");
+    $("input[type=date]").datepicker("option", "dateFormat", "yy-mm-dd");
 
-    $('#created_stats').submit(function (e) {
+    $('#created_stats').submit(function(e) {
         $('#stats').html('<p class="text-center"><i class="fa fa-spinner fa-spin fa-5x"></i></p>');
         e.preventDefault();
         var data = $(this).serializeArray();
         request.read({
             action: "admin/dataAnalysis",
             data: data,
-            callback: function (data) {
+            callback: function(data) {
                 $('#stats').html('');
                 if (data.data) {
                     Morris.Bar({
@@ -140,8 +140,8 @@ $(document).ready(function () {
             action: "admin/fields/" + this.value,
             callback: function(data) {
                 var d = $.parseJSON(data);
-                $.each(d, function (field, property) {
-                    $('#searchField').append('<option value="'+ field +'">'+ field +'</option>');
+                $.each(d, function(field, property) {
+                    $('#searchField').append('<option value="' + field + '">' + field + '</option>');
                 })
             }
         });
@@ -159,26 +159,44 @@ $(document).ready(function () {
 
 });
 
-function today () {
+function today() {
     var today = new Date();
     var dd = today.getDate();
-    var mm = today.getMonth()+1; //January is 0!
+    var mm = today.getMonth() + 1; //January is 0!
     var yyyy = today.getFullYear();
 
-    if(dd<10) { dd='0'+dd}
+    if (dd < 10) {
+        dd = '0' + dd
+    }
 
-    if(mm<10) { mm='0'+mm}
+    if (mm < 10) {
+        mm = '0' + mm
+    }
 
-    today = yyyy+'-'+mm+'-'+dd;
+    today = yyyy + '-' + mm + '-' + dd;
     return today;
 }
 
 function readImage() {
-    if ( this.files && this.files[0] ) {
+    if (this.files && this.files[0]) {
         var FR = new FileReader();
         FR.onload = function(e) {
-            $('#img').attr( "src", e.target.result );
-        };       
-        FR.readAsDataURL( this.files[0] );
+            $('#img').attr("src", e.target.result);
+        };
+        FR.readAsDataURL(this.files[0]);
     }
 }
+
+$('#img').click(function(e) {
+    var offset = $(this).offset();
+    var src_x = e.pageX - offset.left,
+        src_y = e.pageY - offset.top;
+    var d = $("input[name=src_x]").val();
+    if (d > 0) {
+        $("input[name=txt_x]").val(src_x);
+        $("input[name=txt_y]").val(src_y);
+    } else{
+        $("input[name=src_x]").val(src_x);
+        $("input[name=src_y]").val(src_y);
+    };
+});

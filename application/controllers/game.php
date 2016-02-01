@@ -13,19 +13,16 @@ class Game extends Admin {
 	/**
      * @before _secure, changeLayout, _admin
      */
-	public function create() {
-		$this->seo(array("title" => "Create Game", "view" => $this->getLayoutView()));
+	public function looklike() {
+		$this->seo(array("title" => "Looklike Game", "view" => $this->getLayoutView()));
         $view = $this->getActionView();
         if (RequestMethods::post("action") == "campaign") {
-        	$campaign = new Campaign(array(
-        		"user_id" => $this->user->id,
-        		"title" => RequestMethods::post("title"),
-        		"image" => $this->_upload("image"),
-        		"description" => RequestMethods::post("description", ""),
-        		"fblogin" => RequestMethods::post("fblogin", true)
-        	));
-        	$campaign->save();
-        	self::redirect("/game/activity/".$campaign->id);
+            $looklike = new LookLike(array(
+                "title" => RequestMethods::post("title"),
+                "image" => $this->_upload("image"),
+                "description" => RequestMethods::post("description", "")
+            ));
+            $looklike->save();
         }
 	}
 
