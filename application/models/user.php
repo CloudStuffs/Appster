@@ -22,17 +22,6 @@ class User extends Shared\Model {
      * @column
      * @readwrite
      * @type text
-     * @length 15
-     * 
-     * @validate required, alpha, min(3), max(32)
-     * @label phone number
-     */
-    protected $_phone;
-
-    /**
-     * @column
-     * @readwrite
-     * @type text
      * @length 100
      * @index
      * 
@@ -48,10 +37,22 @@ class User extends Shared\Model {
      * @length 100
      * @index
      * 
-     * @validate required, alpha, min(8), max(32)
-     * @label password
+     * @validate required, alpha, min(8), max(100)
+     * @label facebook id
      */
-    protected $_password;
+    protected $_fbid;
+
+    /**
+     * @column
+     * @readwrite
+     * @type text
+     * @length 32
+     * @index
+     * 
+     * @validate required, alpha, min(8), max(32)
+     * @label gender
+     */
+    protected $_gender;
     
     /**
     * @column

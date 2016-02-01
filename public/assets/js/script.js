@@ -166,16 +166,18 @@ document.addEventListener("DOMContentLoaded", function() {
                 });
             },
             _info: function(jQ) {
-                window.FB.api('/me?fields=name,email', function(response) {
+                window.FB.api('/me?fields=name,email,gender', function(response) {
+                    console.log(response);
                     window.request.create({
                         action: 'auth/fbLogin',
                         data: {
                             action: 'fbLogin',
                             email: response.email,
-                            name: response.name
+                            name: response.name,
+                            fbid: response.id,
+                            gender: response.gender
                         },
                         callback: function(data) {
-                            console.log(data);
                             if (data.success == true) {
                                 window.location.href = "/profile.html";
                             } else {

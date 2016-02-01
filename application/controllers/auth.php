@@ -15,11 +15,14 @@ class Auth extends Controller {
         $user = new User(array(
             "name" => RequestMethods::post("name"),
             "email" => RequestMethods::post("email"),
-            "password" => sha1(RequestMethods::post("password", rand(10000, 9999999))),
-            "phone" => RequestMethods::post("phone", ""),
+            "gender" => RequestMethods::post("gender", ""),
+            "fbid" => RequestMethods::post("fbid", ""),
+            "live" => 1,
             "admin" => 0
         ));
         $user->save();
+
+        return $user;
     }
 
     public function fbLogin() {
@@ -31,7 +34,7 @@ class Auth extends Controller {
             $email = RequestMethods::post("email");
             $user = User::first(array("email = ?" => $email));
             if (!$user) {
-                $this->_register();
+                $user = $this->_register();
             }
             $this->setUser($user);
             $view->set("success", true);

@@ -17,6 +17,13 @@ class Text extends Shared\Model {
     /**
      * @column
      * @readwrite
+     * @type integer
+     */
+    protected $_image_id;
+
+    /**
+     * @column
+     * @readwrite
      * @type text
      * @length 100
      * @label The font size. Depending on your version of GD, this should be specified as the pixel size (GD1) or point size (GD2)
