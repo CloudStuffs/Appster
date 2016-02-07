@@ -70,7 +70,14 @@ namespace Shared {
             return number_format($n);
         }
 
+        public static function uniqueString($length = 22) {
+            $unique_random_string = md5(uniqid(mt_rand(), true));
+            $base64_string = base64_encode($unique_random_string);
+            $modified_base64_string = str_replace('+', '.', $base64_string);
+            $salt = substr($modified_base64_string, 0, $length);
 
+            return $salt;
+        }
     }
 
 }

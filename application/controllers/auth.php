@@ -43,16 +43,42 @@ class Auth extends Controller {
         }
     }
 
-    public function upload() {
-        $this->JSONview();
-        $view = $this->getActionView();
+    protected function _upload($name, $opts = array()) {
+        $type = isset($opts["type"]) ? $opts["type"] : "images";
+        /*** Create Directory if not present ***/
+        $path = APP_PATH . "/public/assets/uploads/{$type}";
+        exec("mkdir -p $path");
+        $path .= "/";
 
-        $data = RequestMethods::post("image");
-        $img = explode(",", $data);
-        $path = APP_PATH . "/public/assets/uploads/";
-        $filename = uniqid() . ".png";
-        if (file_put_contents($path.$filename,base64_decode($img[1]))) {
-            $view->set("path", CDN . "uploads/" . $filename);
+        $filename = Markup::uniqueString() . ".{$extension}";
+
+        // For normal file upload via browser
+        if (isset($_FILES[$name])) {
+            $file = $_FILES[$name];
+
+            $extension = pathinfo($file["name"], PATHINFO_EXTENSION);
+            if (empty($extension)) {
+                return false;
+            }
+            /*** Check mime type before moving ***/
+            if (isset($opts["mimes"])) {
+                if (!preg_match("/^{$opts['mimes']}$/", $extension)) {
+                    return false;
+                }
+            }
+            
+            if (move_uploaded_file($file["tmp_name"], $path . $filename)) {
+                return $filename;
+            } else {
+                return FALSE;
+            }
+        // for app upload
+        } elseif ($f = RequestMethods::post($name)) {
+            if (file_put_contents($filename, base64_decode($f))) {
+                return $filename;
+            }
+        } else {
+            return false;
         }
     }
 }

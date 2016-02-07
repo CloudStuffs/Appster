@@ -129,23 +129,64 @@ function readImage() {
     }
 }
 
+(function (window, $) {
+    var Img = (function () {
+        function Img() {
+            this.types = ['src', 'txt', 'usr'];
+            this.el = $('#img');
+        }
+
+        Img.prototype = {
+            _cords: function (event) {  // find coordinates of user click
+                var offset = this.el.offset(),
+                    x = event.pageX - offset.left,
+                    y = event.pageY - offset.top;
+
+                return { x: x, y: y };
+            },
+            _src: function (type, axes, r) {
+                if (!r) {
+                    $('input[name='+ type +'_x]').val(axes.x);
+                    $('input[name='+ type +'_y]').val(axes.y);
+                } else {
+                    return {
+                        w: axes.x - $('input[name='+ type +'_x]').val(),
+                        h: axes.y - $('input[name='+ type +'_y]').val()
+                    };
+                }
+            },
+            process: function (opts) {
+                var axes = this._cords(opts.event),
+                    el = null,
+                    self = this;
+
+                self.types.forEach(function (type) {
+                    el = $('input[value=' + type + ']');
+                    
+                    if (el.is(':checked')) {
+                        if (el.data('calculate') === 'calculate') {
+                            var coords = self._src(type, axes, true);
+                            $('input[name='+ type +'_w]').val(coords.w);
+                            $('input[name='+ type +'_h]').val(coords.h);
+                        }
+
+                        if (typeof el.data('calculate') === "undefined") {
+                            self._src(type, axes);
+                            el.data('calculate', 'calculate');
+                        }
+                    } else {
+                        el.removeData('calculate');
+                    }
+                });
+            }
+        }
+
+        return Img;
+    }());
+
+    window.Img = new Img();
+}(window, jQuery));
+
 $('#img').click(function(e) {
-    var offset = $(this).offset();
-    var x = e.pageX - offset.left,
-        y = e.pageY - offset.top;
-    
-    if($('input[value=src]').is(':checked')) {
-        $("input[name=src_x]").val(x);
-        $("input[name=src_y]").val(y);
-    }
-
-    if($('input[value=txt]').is(':checked')) {
-        $("input[name=txt_x]").val(x);
-        $("input[name=txt_y]").val(y);
-    }
-
-    if($('input[value=usr]').is(':checked')) {
-        $("input[name=usr_x]").val(x);
-        $("input[name=usr_y]").val(y);
-    }
+    Img.process({ event: e });
 });

@@ -12,6 +12,7 @@ class LookLike extends Shared\Model {
      * @readwrite
      * @type text
      * @length 100
+     * @validate required, max(100)
      */
     protected $_title;
 
@@ -20,6 +21,7 @@ class LookLike extends Shared\Model {
      * @readwrite
      * @type text
      * @length 100
+     * @validate required, max(100)
      */
     protected $_image;
 
@@ -43,8 +45,9 @@ class LookLike extends Shared\Model {
      * @column
      * @readwrite
      * @type text
-     * @length 100
+     * @length 10
      * @label x-coordinate of source point
+     * @validate required, max(10)
      */
     protected $_src_x;
 
@@ -52,8 +55,9 @@ class LookLike extends Shared\Model {
      * @column
      * @readwrite
      * @type text
-     * @length 100
+     * @length 10
      * @label y-coordinate of source point
+     * @validate required, max(10)
      */
     protected $_src_y;
 
@@ -61,8 +65,9 @@ class LookLike extends Shared\Model {
      * @column
      * @readwrite
      * @type text
-     * @length 100
+     * @length 10
      * @label Source width
+     * @validate required, max(10)
      */
     protected $_src_w;
 
@@ -70,8 +75,9 @@ class LookLike extends Shared\Model {
      * @column
      * @readwrite
      * @type text
-     * @length 100
+     * @length 10
      * @label Source height
+     * @validate required, max(10)
      */
     protected $_src_h;
 
@@ -79,8 +85,9 @@ class LookLike extends Shared\Model {
      * @column
      * @readwrite
      * @type text
-     * @length 100
+     * @length 10
      * @label x-coordinate of source point
+     * @validate required, max(10)
      */
     protected $_usr_x;
 
@@ -88,8 +95,9 @@ class LookLike extends Shared\Model {
      * @column
      * @readwrite
      * @type text
-     * @length 100
+     * @length 10
      * @label y-coordinate of source point
+     * @validate required, max(10)
      */
     protected $_usr_y;
 
@@ -97,8 +105,9 @@ class LookLike extends Shared\Model {
      * @column
      * @readwrite
      * @type text
-     * @length 100
+     * @length 10
      * @label Source width
+     * @validate required, max(10)
      */
     protected $_usr_w;
 
@@ -106,8 +115,9 @@ class LookLike extends Shared\Model {
      * @column
      * @readwrite
      * @type text
-     * @length 100
+     * @length 10
      * @label Source height
+     * @validate required, max(10)
      */
     protected $_usr_h;
 
@@ -115,8 +125,9 @@ class LookLike extends Shared\Model {
      * @column
      * @readwrite
      * @type text
-     * @length 100
+     * @length 10
      * @label x-coordinate of destination point
+     * @validate required, max(10)
      */
     protected $_txt_x;
 
@@ -124,8 +135,9 @@ class LookLike extends Shared\Model {
      * @column
      * @readwrite
      * @type text
-     * @length 100
+     * @length 10
      * @label y-coordinate of destination point
+     * @validate required, max(10)
      */
     protected $_txt_y;
 

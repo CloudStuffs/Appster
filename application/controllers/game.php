@@ -16,26 +16,15 @@ class Game extends Admin {
 	public function looklike() {
 		$this->seo(array("title" => "Looklike Game", "view" => $this->getLayoutView()));
         $view = $this->getActionView();
+        $fields = array("description", "src_x", "src_y", "srch_h", "src_w", "usr_x", "usr_y", "txt_x", "txt_y", "usr_w", "usr_h", "txt_size", "txt_angle", "txt_color", "title", "description");
+        
         if (RequestMethods::post("action") == "campaign") {
             $looklike = new LookLike(array(
-                "title" => RequestMethods::post("title"),
-                "image" => "",
-                "description" => RequestMethods::post("description", ""),
-                "base_im" => $this->_upload("base_im"),
-                "src_x" => RequestMethods::post("src_x"),
-                "src_y" => RequestMethods::post("src_y"),
-                "src_w" => RequestMethods::post("src_w", ""),
-                "src_h" => RequestMethods::post("src_h", ""),
-                "usr_x" => RequestMethods::post("usr_x"),
-                "usr_y" => RequestMethods::post("usr_y"),
-                "usr_w" => RequestMethods::post("usr_w", ""),
-                "usr_h" => RequestMethods::post("usr_h", ""),
-                "txt_x" => RequestMethods::post("txt_x"),
-                "txt_y" => RequestMethods::post("txt_y"),
-                "txt_size" => RequestMethods::post("txt_size"),
-                "txt_angle" => RequestMethods::post("txt_angle"),
-                "txt_color" => RequestMethods::post("txt_color")
+                "base_im" => $this->_upload("base_im")
             ));
+            foreach ($fields as $key => $value) {
+                $looklike->$value = RequestMethods::post($value);
+            }
             $looklike->save();
 
             self::redirect("/game/item/".$looklike->id);
