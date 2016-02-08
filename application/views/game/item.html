@@ -36,11 +36,17 @@
                 <div class="panel panel-default panel-body">
                     <div class="form-group">
                         <label>Shuffle Image</label>
-                        <input type="file" class="form-control" name="image">
+                        <input type="file" class="form-control" name="image" required="">
                     </div>
                     <div class="form-group">
                         <label>Text</label>
-                        <input type="text" class="form-control" name="text">
+                        <input type="text" class="form-control" name="text" required="">
+                    </div>
+                    <div class="form-group">
+                        <label>Gender</label><br>
+                        <input type="radio" class="radio-inline" name="gender" value="male" checked=""> Male
+                        <input type="radio" class="radio-inline" name="gender" value="female"> Female
+                        <input type="radio" class="radio-inline" name="gender" value="other"> Other
                     </div>
                 </div>
                 <input type="hidden" name="action" value="shuffle">

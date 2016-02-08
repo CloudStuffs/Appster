@@ -67,8 +67,8 @@ document.addEventListener("DOMContentLoaded", function() {
 })(jQuery);
 
 /**** FbModel: Controls facebook login/authentication ******/
-(function(window, Home) {
-    var FbModel = (function() {
+(function (window, $) {
+    var FbModel = (function () {
         function FbModel() {
             this.loaded = false;
         }
@@ -85,18 +85,18 @@ document.addEventListener("DOMContentLoaded", function() {
                 });
                 this.loaded = true;
             },
-            login: function(jQ) {
+            login: function(el) {
                 var self = this;
                 if (!this.loaded) {
                     self.init(window.FB);
                 }
                 window.FB.getLoginStatus(function(response) {
                     if (response.status === 'connected') {
-                        self._info(jQ); // User logged into fb and app
+                        self._info(el); // User logged into fb and app
                     } else {
                         window.FB.login(function(response) {
                             if (response.status === 'connected') {
-                                self._info(jQ);
+                                self._info(el);
                             } else {
                                 alert('Please allow access to your Facebook account, for us to enable direct login to the  DinchakApps');
                             }
@@ -106,11 +106,25 @@ document.addEventListener("DOMContentLoaded", function() {
                     }
                 });
             },
-            _info: function(jQ) {
+            _info: function(el) {
+                var loginType = el.data('action'), action;
+
+                if (typeof loginType === "undefined") {
+                    action = 'auth/fbLogin';
+                } else {
+                    switch (loginType) {
+                        case 'campaign':
+                            action = 'game/test/' + el.data('campaign');
+                            break;
+
+                        default:
+                            action = 'auth/fbLogin';
+                            break;
+                    }
+                }
                 window.FB.api('/me?fields=name,email,gender', function(response) {
-                    console.log(response);
                     window.request.create({
-                        action: 'auth/fbLogin',
+                        action: action,
                         data: {
                             action: 'fbLogin',
                             email: response.email,
@@ -119,8 +133,9 @@ document.addEventListener("DOMContentLoaded", function() {
                             gender: response.gender
                         },
                         callback: function(data) {
+                            console.log(data);
                             if (data.success == true) {
-                                window.location.href = "/profile.html";
+                                // window.location.href = "/profile.html";
                             } else {
                                 alert('Something went wrong');
                             }
@@ -133,17 +148,17 @@ document.addEventListener("DOMContentLoaded", function() {
     }());
 
     window.FbModel = new FbModel();
-}(window, window.Home));
+}(window, jQuery));
 
 
 $(document).ready(function() {
     $.ajaxSetup({cache: true});
     $.getScript('//connect.facebook.net/en_US/sdk.js', FbModel.init(window.FB));
 
-    $("#fbLogin").on("click", function(e) {
+    $(".fbLogin").on("click", function(e) {
         e.preventDefault();
         $(this).addClass('disabled');
-        FbModel.login($);
+        FbModel.login($(this));
         $(this).removeClass('disabled');
     });
 });

@@ -10,10 +10,28 @@ class Item extends Shared\Model {
 	/**
      * @column
      * @readwrite
-     * @type text
-     * @length 100
+     * @type integer
+     * @index
      */
     protected $_looklike_id;
+
+    /**
+     * @column
+     * @readwrite
+     * @type text
+     * @length 100
+     * @index
+     */
+    protected $_key;
+
+    /**
+     * @column
+     * @readwrite
+     * @type text
+     * @length 100
+     * @index
+     */
+    protected $_value;
 
 	/**
      * @column
