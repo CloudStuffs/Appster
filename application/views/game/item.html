@@ -8,10 +8,10 @@
             </div>
             {/if}
             <div class="panel panel-default">
-                <div class="panel-body">
-                    <img id="img" src="/public/assets/uploads/{$looklike->base_im}" />
+                <div class="panel-heading">
+                    <img id="img" class="center-block" src="{echo CDN}uploads/images/{$looklike->base_im}" />
                 </div>
-                <table>
+                <table class="table panel-body">
                     <thead>
                         <tr>
                             <th>Image</th>
@@ -20,12 +20,12 @@
                         </tr>
                     </thead>
                     <tbody>
-                    {foreach $i in items}
+                    {foreach $i in $items}
                         <tr>
-                            <td><img src="/public/assets/uploads/{echo $i->image}">></td>
+                            <td><img src="{echo CDN}uploads/images/{echo $i->image}"></td>
                             <td>{echo $i->text}</td>
                             <td>
-                                
+                                <a href="/items/remove/{echo $i->id}" class="btn btn-xs btn-danger"><i class="fa fa-trash"></i> Delete</a>
                             </td>
                         </tr>
                     {/foreach}

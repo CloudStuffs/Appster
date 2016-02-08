@@ -1,2 +1,5 @@
-
+# config-file
 sftp-config.json
+
+# uploads
+public/assets/uploads

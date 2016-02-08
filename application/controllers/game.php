@@ -16,7 +16,7 @@ class Game extends Admin {
 	public function looklike() {
 		$this->seo(array("title" => "Looklike Game", "view" => $this->getLayoutView()));
         $view = $this->getActionView();
-        $fields = array("description", "src_x", "src_y", "srch_h", "src_w", "usr_x", "usr_y", "txt_x", "txt_y", "usr_w", "usr_h", "txt_size", "txt_angle", "txt_color", "title", "description");
+        $fields = array("description", "src_x", "src_y", "src_h", "src_w", "usr_x", "usr_y", "txt_x", "txt_y", "usr_w", "usr_h", "txt_size", "txt_angle", "txt_color", "title", "description");
         
         if (RequestMethods::post("action") == "campaign") {
             $looklike = new LookLike(array(
@@ -39,7 +39,6 @@ class Game extends Admin {
         $view = $this->getActionView();
 
         $looklike = LookLike::first(array("id = ?" => $looklike_id));
-        $items = Item::all(array("looklike_id = ?" => $looklike->id));
 
         if (RequestMethods::post("action") == "shuffle") {
             $item = new Item(array(
@@ -49,6 +48,7 @@ class Game extends Admin {
             ));
             $item->save();
         }
+        $items = Item::all(array("looklike_id = ?" => $looklike->id));
 
         $view->set("looklike", $looklike);
         $view->set("items", $items);

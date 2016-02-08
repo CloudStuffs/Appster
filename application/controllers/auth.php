@@ -50,7 +50,7 @@ class Auth extends Controller {
         exec("mkdir -p $path");
         $path .= "/";
 
-        $filename = Markup::uniqueString() . ".{$extension}";
+        $filename = Shared\Markup::uniqueString();
 
         // For normal file upload via browser
         if (isset($_FILES[$name])) {
@@ -60,6 +60,7 @@ class Auth extends Controller {
             if (empty($extension)) {
                 return false;
             }
+            $filename .= ".{$extension}";
             /*** Check mime type before moving ***/
             if (isset($opts["mimes"])) {
                 if (!preg_match("/^{$opts['mimes']}$/", $extension)) {
