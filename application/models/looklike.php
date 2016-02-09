@@ -3,34 +3,9 @@
 /**
  * The LookLike Model
  *
- * @author Faizan Ayubi
+ * @author Faizan Ayubi, Hemant Mann
  */
 class LookLike extends Shared\Model {
-
-	/**
-     * @column
-     * @readwrite
-     * @type text
-     * @length 100
-     * @validate required, max(100)
-     */
-    protected $_title;
-
-    /**
-     * @column
-     * @readwrite
-     * @type text
-     * @length 100
-     * @validate required, max(100)
-     */
-    protected $_image;
-
-    /**
-     * @column
-     * @readwrite
-     * @type text
-     */
-    protected $_description;
 
     /**
      * @column

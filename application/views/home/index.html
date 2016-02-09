@@ -3,7 +3,7 @@
         <div class="card-columns">
             {foreach $item in $items}
             <div class="card">
-                <img class="card-img-top img-responsive" src="{echo CDN}uploads/images/{echo $item->base_im}" alt="Look Like Image">
+                <img class="card-img-top img-responsive" src="{echo CDN}uploads/images/{echo $item->image}" alt="Look Like Image">
                 <div class="card-block">
                     <h4 class="card-title">{echo $item->title}</h4>
                     <p class="card-text">{echo $item->description}</p>

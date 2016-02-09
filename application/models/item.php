@@ -22,7 +22,7 @@ class Item extends Shared\Model {
      * @length 100
      * @index
      */
-    protected $_key;
+    protected $_meta_key;
 
     /**
      * @column
@@ -31,7 +31,7 @@ class Item extends Shared\Model {
      * @length 100
      * @index
      */
-    protected $_value;
+    protected $_meta_value;
 
 	/**
      * @column

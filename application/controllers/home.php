@@ -17,8 +17,8 @@ class Home extends Controller {
         $limit = RequestMethods::get("limit", 10);
         $page = RequestMethods::get("page", 1);
 
-        $items = LookLike::all(array("live = ?" => true), array("id", "live", "title", "description", "base_im", "created"), "created", "desc", $limit, $page);
-        $count = LookLike::count(array("live = ?" => true));
+        $items = Campaign::all(array("live = ?" => true), array("id", "live", "title", "description"), "created", "desc", $limit, $page);
+        $count = Campaign::count(array("live = ?" => true));
 
         $view->set("items", $items)
             ->set("count", $count)
