@@ -10,6 +10,14 @@ use \Curl\Curl;
 
 class Game extends Admin {
 	
+    public function view($title, $id) {
+        $this->seo(array("title" => $title, "view" => $this->getLayoutView()));
+        $view = $this->getActionView();
+
+        $campaign = Campaign::first(array("id = ?" => $id));
+        $view->set("campaign", $campaign);
+    }
+
 	/**
      * @before _secure, changeLayout, _admin
      */
