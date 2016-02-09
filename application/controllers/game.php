@@ -25,6 +25,7 @@ class Game extends Admin {
             foreach ($fields as $key => $value) {
                 $looklike->$value = RequestMethods::post($value);
             }
+            $looklike->live = true;
             $looklike->save();
 
             $campaign = new \Campaign(array(
@@ -55,6 +56,7 @@ class Game extends Admin {
                 "meta_key" => "gender",
                 "meta_value" => RequestMethods::post("gender"),
                 "image" => $this->_upload("image"),
+                "live" => true,
                 "text" => RequestMethods::post("text")
             ));
             $item->save();
@@ -114,24 +116,18 @@ class Game extends Admin {
             }
         }
         $user_img = Shared\Image::resize($user_img, $looklike->usr_w, $looklike->usr_h);
-        $user_img_res = Shared\Image::resource($user_img);
 
-        // check extension and 
         $src_file = $path . $looklike->base_im;
         
         // create a container for the final image
         // $filename = Shared\Markup::uniqueString();
-        $filename = "N2M5ZDJlNzM4ZDViMDJiZD";
+        $filename = 'user-final-'. $user->fbid;
         $final_img = $path . $filename .'.jpg';
-        if (!file_exists($final_img)) {
-            copy($src_file, $final_img);
-        }
+        copy($src_file, $final_img);
 
-        // create image resources for processing
-        $dest = Shared\Image::resource($final_img);
         return array(
-            'dest' => $dest,
-            'usr' => $user_img_res,
+            'dest' => Shared\Image::resource($final_img),
+            'usr' => Shared\Image::resource($user_img),
             'filename' => $filename
         );
     }
@@ -140,17 +136,20 @@ class Game extends Admin {
         $this->noview();
         $looklike = Looklike::first(array("id = ?" => $looklike_id));
         $path = APP_PATH.'/public/assets/uploads/images/';
+
+        // echo '<img src="'. CDN . 'uploads/images/' . $looklike->base_im . '">';
         $vars = $this->_setup($path, $looklike);
         $dest = $vars['dest'];
+        echo ($vars['usr']);
 
         /*
         if (RequestMethods::post("action") == "fbLogin") {
             $user = User::first(array("email = ?" => RequestMethods::post("email")));
         }*/
         
-        $items = Item::all(array("live = ?" => true, "meta_key = ?" => "gender", "meta_value = ?" => "male"));
+        $items = Item::all(array("looklike_id = ?" => $looklike->id, "meta_key = ?" => "gender", "meta_value = ?" => strtolower($this->user->gender)));
         $key = rand(0, count($items) - 1);
-        $celebrity = $items[$key];
+        $item = $items[$key];
 
         imagealphablending($dest, false); 
         imagesavealpha($dest, true);
@@ -158,12 +157,12 @@ class Game extends Admin {
         // Now create the final image for the user with whatever campaign image + plus user image + text
         // copy the user image
         imagecopymerge($dest, $vars['usr'], $looklike->usr_x, $looklike->usr_y, 0, 0, $looklike->usr_w, $looklike->usr_h, 100);
-
-        // copy the celebrity image
-        $celeb_img = Shared\Image::resize($path . $random->image, $looklike->src_w, $looklike->src_h);
-        $celeb_res = Shared\Image::resource($celeb_img);
         
-        imagecopymerge($dest, $celeb_res, $looklike->src_x, $looklike->src_y, 0, 0, $looklike->src_w, $looklike->src_h, 100);
+        // copy the item image
+        $item_img = Shared\Image::resize($path . $item->image, $looklike->src_w, $looklike->src_h);
+        $item_res = Shared\Image::resource($item_img);
+        
+        imagecopymerge($dest, $item_res, $looklike->src_x, $looklike->src_y, 0, 0, $looklike->src_w, $looklike->src_h, 100);
 
         // copy celeb text
         $facebook_grey = imagecolorallocate($dest, 74, 74, 74); // Create grey color
@@ -171,7 +170,7 @@ class Game extends Admin {
 
         // replace $font with font path
         $font = APP_PATH.'/public/assets/fonts/monaco.ttf';
-        imagettftext($dest, $looklike->txt_size, $looklike->txt_angle, 170, 190, $facebook_grey , $font, $random->text);
+        imagettftext($dest, $looklike->txt_size, $looklike->txt_angle, 170, 190, $facebook_grey , $font, $item->text);
 
         // create image
         imagejpeg($dest, $vars['filename']);
@@ -185,6 +184,6 @@ class Game extends Admin {
             ));
         }
         $participant->image = $vars['filename'];
-        $participant->save();
+        // $participant->save();*
     }
 }
