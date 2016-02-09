@@ -107,35 +107,35 @@ document.addEventListener("DOMContentLoaded", function() {
                 });
             },
             _info: function(el) {
-                var loginType = el.data('action'), action;
+                var loginType = el.data('action'), extra;
 
                 if (typeof loginType === "undefined") {
-                    action = 'auth/fbLogin';
+                    extra = '';
                 } else {
                     switch (loginType) {
                         case 'campaign':
-                            action = 'game/test/' + el.data('campaign');
+                            extra = 'game/authorize/'+ el.data('campaign');
                             break;
 
                         default:
-                            action = 'auth/fbLogin';
+                            extra = '';
                             break;
                     }
                 }
                 window.FB.api('/me?fields=name,email,gender', function(response) {
                     window.request.create({
-                        action: action,
+                        action: 'auth/fbLogin',
                         data: {
                             action: 'fbLogin',
+                            loc: extra,
                             email: response.email,
                             name: response.name,
                             fbid: response.id,
                             gender: response.gender
                         },
                         callback: function(data) {
-                            console.log(data);
                             if (data.success == true) {
-                                // window.location.href = "/profile.html";
+                                window.location.href = data.redirect;
                             } else {
                                 alert('Something went wrong');
                             }

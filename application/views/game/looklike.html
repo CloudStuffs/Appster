@@ -20,11 +20,15 @@
                         <span class="help-block">{echo Shared\Markup::errors($errors, "description")}</span>
                     </div>
                     <div class="form-group">
+                        <label>Promo Image</label>
+                        <input type="file" class="form-control" name="promo_im" required="">
+                    </div>
+                    <hr>
+                    <div class="form-group">
                         <label>Base Image</label>
                         <input type="file" class="form-control" name="base_im">
                         <img id="img" class="coords" src="" />
                     </div>
-                    <hr>
                     <label><input type="radio" name="coords" value="src"> Shuffle Image Coordinates</label>
                     <div class="form-inline">
                         <div class="form-group">

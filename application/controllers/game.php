@@ -31,7 +31,7 @@ class Game extends Admin {
             $campaign = new \Campaign(array(
                 "title" => RequestMethods::post("title"),
                 "description" => RequestMethods::post("description"),
-                "image" => "",
+                "image" => $this->_upload("promo_im"),
                 "type" => "looklike",
                 "type_id" => $looklike->id
             ));
@@ -101,89 +101,121 @@ class Game extends Admin {
         $view = $this->getActionView();
 	}
 
-	public function play($title, $id) {
-		$this->seo(array("title" => "Play Game", "view" => $this->getLayoutView()));
-		$view = $this->getActionView();
+    /**
+     * @before _secure
+     */
+	public function authorize($id, $token) {
+        $campaign = Campaign::first(array("id = ?" => $id, "live = ?" => true));
+
+        $session = Registry::get("session");
+        if ($token !== $session->get('CampaignAccessToken') || !$campaign) {
+            self::redirect("/404");
+        }
+        $session->erase('CampaignAccessToken');
+
+        $session->set('Game\Authorize:$campaign', $campaign);
+        self::redirect("/game/play");
 	}
 
-    protected function _setup($path, $looklike) {
+    /**
+     * @before _secure
+     */
+    public function play() {
+        $this->seo(array("title" => "Play Game", "view" => $this->getLayoutView()));
+        $view = $this->getActionView();
+        $session = Registry::get("session");
+
+        $campaign = $session->get('Game\Authorize:$campaign');
+        if (!$campaign) {
+            self::redirect("/404");
+        }
+        $session->erase('Game\Authorize:$campaign');
+
+        $model = $campaign->type;
+        $game = $model::first(array("id = ?" => $campaign->type_id));
+        $img = $this->_process($game, $campaign);
+
+        $view->set("img", $img);
+    }
+
+    protected function _setup($path, $game, $participant) {
         $user = $this->user;
         
         $user_img = "{$path}user-".$user->fbid.".jpg";
         if (!file_exists($user_img)) {
-            if (!copy('http://graph.facebook.com/'.$user->fbid.'/picture?width='.$looklike->usr_w.'&height='.$looklike->usr_h, $user_img)) {
+            if (!copy('http://graph.facebook.com/'.$user->fbid.'/picture?width='.$game->usr_w.'&height='.$game->usr_h, $user_img)) {
                 die('Could not copy image');
             }
         }
-        $user_img = Shared\Image::resize($user_img, $looklike->usr_w, $looklike->usr_h);
+        $user_img = Shared\Image::resize($user_img, $game->usr_w, $game->usr_h);
 
-        $src_file = $path . $looklike->base_im;
+        $src_file = $path . $game->base_im;
         
-        // create a container for the final image
-        // $filename = Shared\Markup::uniqueString();
-        $filename = 'user-final-'. $user->fbid;
-        $final_img = $path . $filename .'.jpg';
+        if ($participant) {
+            $filename = $participant->image;
+        } else {
+            $filename = Shared\Markup::uniqueString() . '.jpg';
+        }
+        $final_img = $path . $filename;
         copy($src_file, $final_img);
 
         return array(
             'dest' => Shared\Image::resource($final_img),
             'usr' => Shared\Image::resource($user_img),
+            'file' => $final_img,
             'filename' => $filename
         );
     }
 
-    public function test($looklike_id) {
-        $this->noview();
-        $looklike = Looklike::first(array("id = ?" => $looklike_id));
+    /**
+     * @param object $game
+     * @param object $campaign object of class \Campaign
+     * @param boolean $play_agin If user wishes to play the game again
+     *
+     * @return string String containing the filename of the resultant image
+     */
+    protected function _process($game, $campaign, $play_again = false) {
+        $participant = Participant::first(array("user_id = ?" => $this->user->id, "campaign_id = ?" => $campaign->id));
+        if ($participant && !$play_again) {
+            return $participant->image;
+        }
+
         $path = APP_PATH.'/public/assets/uploads/images/';
-
-        // echo '<img src="'. CDN . 'uploads/images/' . $looklike->base_im . '">';
-        $vars = $this->_setup($path, $looklike);
+        $vars = $this->_setup($path, $game, $participant);
         $dest = $vars['dest'];
-        echo ($vars['usr']);
-
-        /*
-        if (RequestMethods::post("action") == "fbLogin") {
-            $user = User::first(array("email = ?" => RequestMethods::post("email")));
-        }*/
         
-        $items = Item::all(array("looklike_id = ?" => $looklike->id, "meta_key = ?" => "gender", "meta_value = ?" => strtolower($this->user->gender)));
+        $items = Item::all(array("looklike_id = ?" => $game->id, "meta_key = ?" => "gender", "meta_value = ?" => strtolower($this->user->gender)));
         $key = rand(0, count($items) - 1);
         $item = $items[$key];
 
-        imagealphablending($dest, false); 
-        imagesavealpha($dest, true);
+        imagealphablending($dest, false); imagesavealpha($dest, true);
 
-        // Now create the final image for the user with whatever campaign image + plus user image + text
-        // copy the user image
-        imagecopymerge($dest, $vars['usr'], $looklike->usr_x, $looklike->usr_y, 0, 0, $looklike->usr_w, $looklike->usr_h, 100);
+        imagecopymerge($dest, $vars['usr'], $game->usr_x, $game->usr_y, 0, 0, $game->usr_w, $game->usr_h, 100);
         
-        // copy the item image
-        $item_img = Shared\Image::resize($path . $item->image, $looklike->src_w, $looklike->src_h);
+        $item_img = Shared\Image::resize($path . $item->image, $game->src_w, $game->src_h);
         $item_res = Shared\Image::resource($item_img);
         
-        imagecopymerge($dest, $item_res, $looklike->src_x, $looklike->src_y, 0, 0, $looklike->src_w, $looklike->src_h, 100);
+        imagecopymerge($dest, $item_res, $game->src_x, $game->src_y, 0, 0, $game->src_w, $game->src_h, 100);
 
-        // copy celeb text
         $facebook_grey = imagecolorallocate($dest, 74, 74, 74); // Create grey color
         imagealphablending($dest, true); //bring back alpha blending for transperent font
 
         // replace $font with font path
         $font = APP_PATH.'/public/assets/fonts/monaco.ttf';
-        imagettftext($dest, $looklike->txt_size, $looklike->txt_angle, 170, 190, $facebook_grey , $font, $item->text);
+        imagettftext($dest, $game->txt_size, $game->txt_angle, 170, 190, $facebook_grey , $font, $item->text);
 
         // create image
-        imagejpeg($dest, $vars['filename']);
-        var_dump($vars['filename']);
+        imagejpeg($dest, $vars['file']);
 
-        $participant = Participant::first(array("user_id = ?" => $user->id, "campaign_id = ?" => 1));
         if (!$participant) {
             $participant = new Participant(array(
-                "user_id" => $user->id,
-                "campaign_id" => 1
+                "user_id" => $this->user->id,
+                "campaign_id" => $campaign->id,
+                "live" => true
             ));
         }
         $participant->image = $vars['filename'];
-        // $participant->save();*
+        $participant->save();
+        return $participant->image;
     }
 }

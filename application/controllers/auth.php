@@ -37,6 +37,13 @@ class Auth extends Controller {
                 $user = $this->_register();
             }
             $this->setUser($user);
+            
+            $redirect = RequestMethods::post("loc");
+            if ($redirect != '') {
+                $token = Shared\Markup::uniqueString();
+                $session->set('CampaignAccessToken', $token);
+                $view->set("redirect", "/". $redirect . "/{$token}");
+            }
             $view->set("success", true);
         } else {
             $view->set("success", false);

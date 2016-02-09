@@ -17,7 +17,7 @@ class Home extends Controller {
         $limit = RequestMethods::get("limit", 10);
         $page = RequestMethods::get("page", 1);
 
-        $items = Campaign::all(array("live = ?" => true), array("id", "live", "title", "description"), "created", "desc", $limit, $page);
+        $items = Campaign::all(array("live = ?" => true), array("id", "live", "image", "title", "description"), "created", "desc", $limit, $page);
         $count = Campaign::count(array("live = ?" => true));
 
         $view->set("items", $items)

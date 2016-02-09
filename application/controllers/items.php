@@ -16,7 +16,7 @@ class Items extends Admin {
 
 		$item = Item::first(array("id = ?" => $item_id));
 		if ($item) {
-			@unlink(CDN.'uploads/images/'. $item->image);
+			@unlink(APP_PATH.'/public/assets/uploads/images/'. $item->image);
 			$item->delete();
 		}
 		self::redirect($_SERVER['HTTP_REFERER']);
