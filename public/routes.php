@@ -4,9 +4,9 @@
 
 $routes = array(
     array(
-        "pattern" => "contact",
+        "pattern" => "index",
         "controller" => "home",
-        "action" => "contact"
+        "action" => "index"
     ),
     array(
         "pattern" => "profile",

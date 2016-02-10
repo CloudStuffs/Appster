@@ -11,11 +11,26 @@ use \Curl\Curl;
 class Game extends Admin {
 	
     public function view($title, $id) {
-        $this->seo(array("title" => $title, "view" => $this->getLayoutView()));
+        $campaign = Campaign::first(array("id = ?" => $id));
+        $this->seo(array("title" => $campaign->title, "view" => $this->getLayoutView()));
         $view = $this->getActionView();
 
-        $campaign = Campaign::first(array("id = ?" => $id));
         $view->set("campaign", $campaign);
+    }
+
+    public function result($participant_id) {
+        $participant = Participant::first(array("id = ?" => $participant_id));
+        $campaign = Campaign::first(array("id = ?" => $participant->campaign_id));
+        $this->seo(array(
+            "title" => $campaign->title, 
+            "description" => $campaign->description,
+            "photo" => CDN . "uploads/images" .$participant->image,
+            "view" => $this->getLayoutView()
+        ));
+        $view = $this->getActionView();
+
+        $view->set("campaign", $campaign);
+        $view->set("participant", $participant);
     }
 
 	/**
@@ -117,7 +132,7 @@ class Game extends Admin {
 
         $session = Registry::get("session");
         if ($token !== $session->get('CampaignAccessToken') || !$campaign) {
-            self::redirect("/404");
+            self::redirect("/index.html");
         }
         $session->erase('CampaignAccessToken');
 
@@ -135,7 +150,7 @@ class Game extends Admin {
 
         $campaign = $session->get('Game\Authorize:$campaign');
         if (!$campaign) {
-            self::redirect("/404");
+            self::redirect("/index.html");
         }
         $session->erase('Game\Authorize:$campaign');
 
@@ -143,7 +158,10 @@ class Game extends Admin {
         $game = $model::first(array("id = ?" => $campaign->type_id));
         $img = $this->_process($game, $campaign);
 
+        $participant = Participant::first(array("user_id = ?" => $this->user->id, "campaign_id = ?" => $campaign->id));
+
         $view->set("img", $img);
+        $view->set("participant", $participant);
     }
 
     protected function _setup($path, $game, $participant) {
