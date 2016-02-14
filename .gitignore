@@ -2,7 +2,7 @@
 sftp-config.json
 
 # uploads
-public/assets/uploads
+html/public/assets/uploads
 
 # fonts
-public/assets/fonts
+html/public/assets/fonts

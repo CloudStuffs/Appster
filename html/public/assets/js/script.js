@@ -161,4 +161,13 @@ $(document).ready(function() {
         FbModel.login($(this));
         $(this).removeClass('disabled');
     });
+
+    $(".fbshare").click(function(e) {
+        var fbshare = $(this).data("fbshare");
+        ouvre("https://www.facebook.com/sharer/sharer.php?u="+fbshare);
+    });
 });
+
+function ouvre(fichier) {
+    ff=window.open(fichier,"popup","width=600px,height=300px,left=50%,top=50%");
+}
