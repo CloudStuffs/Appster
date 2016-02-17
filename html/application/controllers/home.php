@@ -37,11 +37,11 @@ class Home extends Controller {
      * @before _secure
      */
     public function profile() {
-        $this->seo(array(
-            "title" => "Profile",
-            "view" => $this->getLayoutView()
-        ));
+        $this->seo(array("title" => "Profile", "view" => $this->getLayoutView()));
         $view = $this->getActionView();
+
+        $participants = Participant::all(array("user_id = ?" => $this->user->id), array("campaign_id", "id", "created"));
+        $view->set("participants", $participants);
     }
 
 }

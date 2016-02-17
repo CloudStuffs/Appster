@@ -19,12 +19,15 @@
                     </tr>
                 </thead>
                 <tbody>
+                    {foreach $p in $participants}
+                    {script $campaign = Campaign::first(array("id = ?" => $p->campaign_id), array("title"))}
                     <tr>
-                        <th scope="row">1</th>
-                        <td>Mark</td>
-                        <td>Otto</td>
-                        <td>@mdo</td>
+                        <th scope="row">{$p->id}</th>
+                        <td>{echo $campaign->title}</td>
+                        <td>{echo $p->created}</td>
+                        <td><a href="/game/result/{echo $p->id}">view</a></td>
                     </tr>
+                    {/foreach}
                 </tbody>
             </table>
         </div>

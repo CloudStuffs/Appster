@@ -64,6 +64,37 @@ class Game extends Admin {
         }
 	}
 
+    /**
+     * @before _secure, changeLayout, _admin
+     */
+    public function like() {
+        $this->seo(array("title" => "Like Game", "view" => $this->getLayoutView()));
+        $view = $this->getActionView();
+        $fields = array("usr_x", "usr_y", "txt_x", "txt_y", "usr_w", "usr_h", "txt_size", "txt_angle", "txt_color");
+        
+        if (RequestMethods::post("action") == "campaign") {
+            $imagetext = new \ImageText(array(
+                "base_im" => $this->_upload("base_im")
+            ));
+            foreach ($fields as $key => $value) {
+                $imagetext->$value = RequestMethods::post($value);
+            }
+            $imagetext->live = true;
+            $imagetext->save();
+
+            $campaign = new \Campaign(array(
+                "title" => RequestMethods::post("title"),
+                "description" => RequestMethods::post("description"),
+                "image" => $this->_upload("promo_im"),
+                "type" => "imagetext",
+                "type_id" => $imagetext->id
+            ));
+            $campaign->save();
+
+            self::redirect("/game/imagetext/".$imagetext->id);
+        }
+    }
+
 	/**
      * @before _secure, changeLayout, _admin
      */
@@ -89,6 +120,32 @@ class Game extends Admin {
         $view->set("looklike", $looklike);
         $view->set("items", $items);
 	}
+
+    /**
+     * @before _secure, changeLayout, _admin
+     */
+    public function imagetext($imagetext_id) {
+        $this->seo(array("title" => "ImageText Content", "view" => $this->getLayoutView()));
+        $view = $this->getActionView();
+
+        $imagetext = ImageText::first(array("id = ?" => $imagetext_id));
+
+        if (RequestMethods::post("action") == "shuffle") {
+            $item = new ImageTextItem(array(
+                "looklike_id" => $imagetext->id,
+                "meta_key" => "gender",
+                "meta_value" => RequestMethods::post("gender"),
+                "image" => $this->_upload("image"),
+                "live" => true,
+                "text" => RequestMethods::post("text")
+            ));
+            $item->save();
+        }
+        $items = ImageTextItem::all(array("looklike_id = ?" => $imagetext->id));
+
+        $view->set("imagetext", $imagetext);
+        $view->set("items", $items);
+    }
 
     /**
      * @before _secure, changeLayout, _admin
@@ -242,6 +299,15 @@ class Game extends Admin {
         }
         $participant->image = $vars['filename'];
         $participant->save();
+
+        $m = new MongoClient();$db = $m->stats;$p = $db->participants;
+        $p->insert(array(
+            'participant_id' => $participant->id,
+            'title' => $campaign->title,
+            'description' => $campaign->description,
+            'image' => $vars['filename'],
+            'url' => 'game/result/'.$participant->id
+        ));
         return $participant->image;
     }
 }
