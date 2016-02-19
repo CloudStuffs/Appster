@@ -133,8 +133,8 @@ class Game extends Admin {
         if (RequestMethods::post("action") == "shuffle") {
             $item = new ImageTextItem(array(
                 "looklike_id" => $imagetext->id,
-                "meta_key" => "gender",
-                "meta_value" => RequestMethods::post("gender"),
+                "meta_key" => "",
+                "meta_value" => "",
                 "image" => $this->_upload("image"),
                 "live" => true,
                 "text" => RequestMethods::post("text")
