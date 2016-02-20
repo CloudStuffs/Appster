@@ -1,8 +1,6 @@
 <?php
 
 /**
- * The User Model
- *
  * @author Faizan Ayubi
  */
 class User extends Shared\Model {

@@ -1,8 +1,6 @@
 <?php
 
 /**
- * The ImageTextItem Model
- *
  * @author Faizan Ayubi
  */
 class ShuffleImageItem extends Shared\Model {

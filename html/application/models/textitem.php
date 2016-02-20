@@ -1,19 +1,17 @@
 <?php
 
 /**
- * The Item Model
- *
  * @author Faizan Ayubi
  */
-class Item extends Shared\Model {
+class ImageTextItem extends Shared\Model {
 
-	/**
+    /**
      * @column
      * @readwrite
      * @type integer
      * @index
      */
-    protected $_looklike_id;
+    protected $_imagetext_id;
 
     /**
      * @column
@@ -32,14 +30,6 @@ class Item extends Shared\Model {
      * @index
      */
     protected $_meta_value;
-
-	/**
-     * @column
-     * @readwrite
-     * @type text
-     * @length 100
-     */
-    protected $_image;
 
     /**
      * @column

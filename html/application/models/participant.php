@@ -1,8 +1,6 @@
 <?php
 
 /**
- * The Participant Model
- *
  * @author Faizan Ayubi
  */
 class Participant extends Shared\Model {

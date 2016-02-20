@@ -1,8 +1,6 @@
 <?php
 
 /**
- * The Campaign Model
- *
  * @author Hemant Mann
  */
 class Campaign extends Shared\Model {

@@ -60,9 +60,35 @@ class Game extends Play {
             ));
             $campaign->save();
 
-            self::redirect("/game/item/".$looklike->id);
+            self::redirect("/game/looklikeitem/".$looklike->id);
         }
 	}
+
+    /**
+     * @before _secure, changeLayout, _admin
+     */
+    public function looklikeitem($looklike_id) {
+        $this->seo(array("title" => "Looklike Content", "view" => $this->getLayoutView()));
+        $view = $this->getActionView();
+
+        $looklike = LookLike::first(array("id = ?" => $looklike_id));
+
+        if (RequestMethods::post("action") == "shuffle") {
+            $item = new Item(array(
+                "looklike_id" => $looklike->id,
+                "meta_key" => "gender",
+                "meta_value" => RequestMethods::post("gender"),
+                "image" => $this->_upload("image"),
+                "live" => true,
+                "text" => RequestMethods::post("text")
+            ));
+            $item->save();
+        }
+        $items = Item::all(array("looklike_id = ?" => $looklike->id));
+
+        $view->set("looklike", $looklike);
+        $view->set("items", $items);
+    }
 
     /**
      * @before _secure, changeLayout, _admin
@@ -98,6 +124,32 @@ class Game extends Play {
     /**
      * @before _secure, changeLayout, _admin
      */
+    public function imagetext($imagetext_id) {
+        $this->seo(array("title" => "ImageText Content", "view" => $this->getLayoutView()));
+        $view = $this->getActionView();
+
+        $imagetext = ImageText::first(array("id = ?" => $imagetext_id));
+
+        if (RequestMethods::post("action") == "shuffle") {
+            $item = new ImageTextItem(array(
+                "imagetext_id" => $imagetext->id,
+                "meta_key" => "",
+                "meta_value" => "",
+                "image" => $this->_upload("image"),
+                "live" => true,
+                "text" => RequestMethods::post("text")
+            ));
+            $item->save();
+        }
+        $items = ImageTextItem::all(array("looklike_id = ?" => $imagetext->id));
+
+        $view->set("imagetext", $imagetext);
+        $view->set("items", $items);
+    }
+
+    /**
+     * @before _secure, changeLayout, _admin
+     */
     public function shuffleimage() {
         $this->seo(array("title" => "Shuffleimage Game", "view" => $this->getLayoutView()));
         $view = $this->getActionView();
@@ -124,58 +176,6 @@ class Game extends Play {
 
             self::redirect("/game/shuffleimageitem/".$shuffleimage->id);
         }
-    }
-
-	/**
-     * @before _secure, changeLayout, _admin
-     */
-	public function item($looklike_id) {
-		$this->seo(array("title" => "Looklike Content", "view" => $this->getLayoutView()));
-        $view = $this->getActionView();
-
-        $looklike = LookLike::first(array("id = ?" => $looklike_id));
-
-        if (RequestMethods::post("action") == "shuffle") {
-            $item = new Item(array(
-                "looklike_id" => $looklike->id,
-                "meta_key" => "gender",
-                "meta_value" => RequestMethods::post("gender"),
-                "image" => $this->_upload("image"),
-                "live" => true,
-                "text" => RequestMethods::post("text")
-            ));
-            $item->save();
-        }
-        $items = Item::all(array("looklike_id = ?" => $looklike->id));
-
-        $view->set("looklike", $looklike);
-        $view->set("items", $items);
-	}
-
-    /**
-     * @before _secure, changeLayout, _admin
-     */
-    public function imagetext($imagetext_id) {
-        $this->seo(array("title" => "ImageText Content", "view" => $this->getLayoutView()));
-        $view = $this->getActionView();
-
-        $imagetext = ImageText::first(array("id = ?" => $imagetext_id));
-
-        if (RequestMethods::post("action") == "shuffle") {
-            $item = new ImageTextItem(array(
-                "imagetext_id" => $imagetext->id,
-                "meta_key" => "",
-                "meta_value" => "",
-                "image" => $this->_upload("image"),
-                "live" => true,
-                "text" => RequestMethods::post("text")
-            ));
-            $item->save();
-        }
-        $items = ImageTextItem::all(array("looklike_id = ?" => $imagetext->id));
-
-        $view->set("imagetext", $imagetext);
-        $view->set("items", $items);
     }
 
     /**
@@ -229,14 +229,6 @@ class Game extends Play {
         $view->set("page", $page);
 	}
 
-	/**
-     * @before _secure, changeLayout, _admin
-     */
-	public function manage() {
-		$this->seo(array("title" => "Manage Game", "view" => $this->getLayoutView()));
-        $view = $this->getActionView();
-	}
-
     /**
      * @before _secure
      */
@@ -275,5 +267,24 @@ class Game extends Play {
 
         $view->set("img", $img);
         $view->set("participant", $participant);
+    }
+
+    /**
+     * @before _secure, changeLayout, _admin
+     */
+    public function participants() {
+        $this->seo(array("title" => "Game Participants", "view" => $this->getLayoutView()));
+        $view = $this->getActionView();
+
+        $limit = RequestMethods::get("limit", 10);
+        $page = RequestMethods::get("page", 1);
+
+        $participants = Participant::all(array(), array("*"), "created", "desc", $limit, $page);
+        $count = Participant::count();
+
+        $view->set("participants", $participants);
+        $view->set("count", $count);
+        $view->set("limit", $limit);
+        $view->set("page", $page);
     }
 }
