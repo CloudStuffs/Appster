@@ -103,15 +103,15 @@ class Game extends Config {
         $game = $model::first(array("id = ?" => $campaign->type_id));
         switch ($model) {
             case 'imagetext':
-                $img = $this->_process($game, $campaign);
+                $img = $this->_imagetextprocess($game, $campaign);
                 break;
             
             case 'image':
-                # code...
+                $img = $this->_imageprocess($game, $campaign);
                 break;
 
             case 'text':
-                # code...
+                $img = $this->_textprocess($game, $campaign);
                 break;
         }
 
