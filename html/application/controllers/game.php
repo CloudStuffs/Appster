@@ -95,6 +95,37 @@ class Game extends Play {
         }
     }
 
+    /**
+     * @before _secure, changeLayout, _admin
+     */
+    public function shuffleimage() {
+        $this->seo(array("title" => "Shuffleimage Game", "view" => $this->getLayoutView()));
+        $view = $this->getActionView();
+        $fields = array("usr_x", "usr_y", "usr_w", "usr_h");
+        
+        if (RequestMethods::post("action") == "campaign") {
+            $shuffleimage = new \ShuffleImage(array(
+                "base_im" => $this->_upload("base_im")
+            ));
+            foreach ($fields as $key => $value) {
+                $shuffleimage->$value = RequestMethods::post($value);
+            }
+            $shuffleimage->live = true;
+            $shuffleimage->save();
+
+            $campaign = new \Campaign(array(
+                "title" => RequestMethods::post("title"),
+                "description" => RequestMethods::post("description"),
+                "image" => $this->_upload("promo_im"),
+                "type" => "shuffleimage",
+                "type_id" => $shuffleimage->id
+            ));
+            $campaign->save();
+
+            self::redirect("/game/shuffleimageitem/".$shuffleimage->id);
+        }
+    }
+
 	/**
      * @before _secure, changeLayout, _admin
      */
@@ -132,7 +163,7 @@ class Game extends Play {
 
         if (RequestMethods::post("action") == "shuffle") {
             $item = new ImageTextItem(array(
-                "looklike_id" => $imagetext->id,
+                "imagetext_id" => $imagetext->id,
                 "meta_key" => "",
                 "meta_value" => "",
                 "image" => $this->_upload("image"),
@@ -144,6 +175,31 @@ class Game extends Play {
         $items = ImageTextItem::all(array("looklike_id = ?" => $imagetext->id));
 
         $view->set("imagetext", $imagetext);
+        $view->set("items", $items);
+    }
+
+    /**
+     * @before _secure, changeLayout, _admin
+     */
+    public function shuffleimageitem($shuffleimage_id) {
+        $this->seo(array("title" => "shuffleimage Content", "view" => $this->getLayoutView()));
+        $view = $this->getActionView();
+
+        $shuffleimage = ShuffleImage::first(array("id = ?" => $shuffleimage_id));
+
+        if (RequestMethods::post("action") == "shuffle") {
+            $item = new ShuffleImageItem(array(
+                "shuffleimage_id" => $shuffleimage->id,
+                "meta_key" => "",
+                "meta_value" => "",
+                "image" => $this->_upload("image"),
+                "live" => true
+            ));
+            $item->save();
+        }
+        $items = ShuffleImageItem::all(array("shuffleimage_id = ?" => $shuffleimage->id));
+
+        $view->set("shuffleimage", $shuffleimage);
         $view->set("items", $items);
     }
 
