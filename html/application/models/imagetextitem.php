@@ -11,7 +11,7 @@ class ImageTextItem extends Shared\Model {
      * @type integer
      * @index
      */
-    protected $_looklike_id;
+    protected $_imagetext_id;
 
     /**
      * @column

@@ -12,57 +12,58 @@ class Config extends Play {
      * @before _secure, changeLayout, _admin
      */
 	public function imagetext() {
-		$this->seo(array("title" => "Looklike Game", "view" => $this->getLayoutView()));
+		$this->seo(array("title" => "ImageText Game", "view" => $this->getLayoutView()));
         $view = $this->getActionView();
         $fields = array("src_x", "src_y", "src_h", "src_w", "usr_x", "usr_y", "txt_x", "txt_y", "usr_w", "usr_h", "txt_size", "txt_angle", "txt_color");
         
         if (RequestMethods::post("action") == "campaign") {
-            $looklike = new \LookLike(array(
+            $imagetext = new \ImageText(array(
                 "base_im" => $this->_upload("base_im")
             ));
             foreach ($fields as $key => $value) {
-                $looklike->$value = RequestMethods::post($value);
+                $imagetext->$value = RequestMethods::post($value, "0");
             }
-            $looklike->live = true;
-            $looklike->save();
+            $imagetext->live = true;
+            $imagetext->save();
 
             $campaign = new \Campaign(array(
                 "title" => RequestMethods::post("title"),
                 "description" => RequestMethods::post("description"),
                 "image" => $this->_upload("promo_im"),
-                "type" => "looklike",
-                "type_id" => $looklike->id
+                "type" => "imagetext",
+                "type_id" => $imagetext->id
             ));
             $campaign->save();
 
-            self::redirect("/game/looklikeitem/".$looklike->id);
+            self::redirect("/config/imagetextitem/".$imagetext->id);
         }
 	}
 
     /**
      * @before _secure, changeLayout, _admin
      */
-    public function imagetextitem($looklike_id) {
+    public function imagetextitem($imagetext_id) {
         $this->seo(array("title" => "Looklike Content", "view" => $this->getLayoutView()));
         $view = $this->getActionView();
 
-        $looklike = LookLike::first(array("id = ?" => $looklike_id));
+        $imagetext = ImageText::first(array("id = ?" => $imagetext_id));
 
         if (RequestMethods::post("action") == "shuffle") {
-            $item = new Item(array(
-                "looklike_id" => $looklike->id,
+            $imagetextitem = new ImageTextItem(array(
+                "imagetext_id" => $imagetext->id,
                 "meta_key" => "gender",
                 "meta_value" => RequestMethods::post("gender"),
                 "image" => $this->_upload("image"),
                 "live" => true,
                 "text" => RequestMethods::post("text")
             ));
-            $item->save();
+            $imagetextitem->save();
+            $view->set("success", true);
         }
-        $items = Item::all(array("looklike_id = ?" => $looklike->id));
+        $imagetextitems = ImageTextItem::all(array("imagetext_id = ?" => $imagetext->id));
 
-        $view->set("looklike", $looklike);
-        $view->set("items", $items);
+        $view->set("imagetext", $imagetext);
+        $view->set("imagetextitems", $imagetextitems);
     }
 
     /**
