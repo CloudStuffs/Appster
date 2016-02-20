@@ -3,7 +3,7 @@
 /**
  * @author Faizan Ayubi, Hemant Mann
  */
-class ImageText extends Shared\Model {
+class Text extends Shared\Model {
 
     /**
      * @column

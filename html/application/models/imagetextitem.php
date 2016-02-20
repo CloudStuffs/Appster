@@ -3,7 +3,7 @@
 /**
  * @author Faizan Ayubi
  */
-class Item extends Shared\Model {
+class ImageTextItem extends Shared\Model {
 
 	/**
      * @column

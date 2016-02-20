@@ -3,7 +3,7 @@
 /**
  * @author Faizan Ayubi, Hemant Mann
  */
-class ShuffleImage extends Shared\Model {
+class Image extends Shared\Model {
 
     /**
      * @column

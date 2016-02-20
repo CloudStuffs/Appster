@@ -3,7 +3,7 @@
 /**
  * @author Faizan Ayubi, Hemant Mann
  */
-class LookLike extends Shared\Model {
+class ImageText extends Shared\Model {
 
     /**
      * @column

@@ -3,7 +3,7 @@
 /**
  * @author Faizan Ayubi
  */
-class ShuffleImageItem extends Shared\Model {
+class ImageItem extends Shared\Model {
 
     /**
      * @column
@@ -11,7 +11,7 @@ class ShuffleImageItem extends Shared\Model {
      * @type integer
      * @index
      */
-    protected $_shuffleimage_id;
+    protected $_image_id;
 
     /**
      * @column
