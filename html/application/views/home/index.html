@@ -1,8 +1,8 @@
 <section class="bg-alt">
     <div class="container fadeInUp">
         <div class="card-deck-wrapper">
-            <div class="card-deck">
-                {foreach $item in $items}
+            {foreach $item in $items}
+            <div class="col-md-3 col-xs-12">
                 <div class="card">
                     <a href="/game/view/{echo Framework\StringMethods::url($item->title)}/{echo $item->id}"><img class="card-img-top img-responsive" src="{echo CDN}uploads/images/{echo $item->image}" alt="Look Like Image"></a>
                     <div class="card-block">
@@ -10,8 +10,8 @@
                         <p class="card-text">{echo $item->description}</p>
                     </div>
                 </div>
-                {/foreach}
             </div>
+            {/foreach}
         </div>
     </div>
 </section>

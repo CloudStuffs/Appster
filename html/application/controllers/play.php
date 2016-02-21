@@ -154,22 +154,17 @@ class Play extends Admin {
         $vars = $this->_setup($path, $game, $participant);
         $dest = $vars['dest'];
 
-        $items = ImageTextItem::all(array("imagetext_id = ?" => $game->id, "meta_key = ?" => "gender", "meta_value = ?" => strtolower($this->user->gender)));
+        $items = TextItem::all(array("text_id = ?" => $game->id));
         $key = rand(0, count($items) - 1);
         $item = $items[$key];
         
         imagecopymerge($dest, $vars['usr'], $game->usr_x, $game->usr_y, 0, 0, $game->usr_w, $game->usr_h, 100);
-        
-        $item_img = Shared\Image::resize($path . $item->image, $game->src_w, $game->src_h);
-        $item_res = Shared\Image::resource($item_img);
 
         $grey = imagecolorallocate($dest, 0, 0, 0); // Create black color
 
         // replace $font with font path
         $font = APP_PATH.'/public/assets/fonts/monaco.ttf';
-        imagettftext($dest, $game->txt_size, 0, $game->txt_x, $game->txt_y, $grey, $font, $item->text);
-        
-        imagecopymerge($dest, $item_res, $game->src_x, $game->src_y, 0, 0, $game->src_w, $game->src_h, 100);
+        imagettftext($dest, $game->txt_size, $game->txt_angle, $game->txt_x, $game->txt_y, $grey, $font, $item->text);
 
         unlink($vars['file']);
         imagejpeg($dest, $vars['file']);

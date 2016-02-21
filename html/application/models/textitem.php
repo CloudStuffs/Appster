@@ -11,7 +11,7 @@ class TextItem extends Shared\Model {
      * @type integer
      * @index
      */
-    protected $_imagetext_id;
+    protected $_text_id;
 
     /**
      * @column

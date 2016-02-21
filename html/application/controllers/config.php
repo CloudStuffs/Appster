@@ -70,56 +70,55 @@ class Config extends Play {
      * @before _secure, changeLayout, _admin
      */
     public function text() {
-        $this->seo(array("title" => "Like Game", "view" => $this->getLayoutView()));
+        $this->seo(array("title" => "Text Game", "view" => $this->getLayoutView()));
         $view = $this->getActionView();
         $fields = array("usr_x", "usr_y", "txt_x", "txt_y", "usr_w", "usr_h", "txt_size", "txt_angle", "txt_color");
         
         if (RequestMethods::post("action") == "campaign") {
-            $imagetext = new \ImageText(array(
+            $text = new \Text(array(
                 "base_im" => $this->_upload("base_im")
             ));
             foreach ($fields as $key => $value) {
-                $imagetext->$value = RequestMethods::post($value);
+                $text->$value = RequestMethods::post($value, "0");
             }
-            $imagetext->live = true;
-            $imagetext->save();
+            $text->live = true;
+            $text->save();
 
             $campaign = new \Campaign(array(
                 "title" => RequestMethods::post("title"),
                 "description" => RequestMethods::post("description"),
                 "image" => $this->_upload("promo_im"),
-                "type" => "imagetext",
-                "type_id" => $imagetext->id
+                "type" => "text",
+                "type_id" => $text->id
             ));
             $campaign->save();
 
-            self::redirect("/config/imagetext/".$imagetext->id);
+            self::redirect("/config/textitem/".$text->id);
         }
     }
 
     /**
      * @before _secure, changeLayout, _admin
      */
-    public function textitem($imagetext_id) {
+    public function textitem($text_id) {
         $this->seo(array("title" => "ImageText Content", "view" => $this->getLayoutView()));
         $view = $this->getActionView();
 
-        $imagetext = ImageText::first(array("id = ?" => $imagetext_id));
+        $text = Text::first(array("id = ?" => $text_id));
 
         if (RequestMethods::post("action") == "shuffle") {
-            $item = new ImageTextItem(array(
-                "imagetext_id" => $imagetext->id,
+            $item = new TextItem(array(
+                "text_id" => $text->id,
                 "meta_key" => "",
                 "meta_value" => "",
-                "image" => $this->_upload("image"),
                 "live" => true,
                 "text" => RequestMethods::post("text")
             ));
             $item->save();
         }
-        $items = ImageTextItem::all(array("looklike_id = ?" => $imagetext->id));
+        $items = TextItem::all(array("text_id = ?" => $text->id));
 
-        $view->set("imagetext", $imagetext);
+        $view->set("text", $text);
         $view->set("items", $items);
     }
 
@@ -136,7 +135,7 @@ class Config extends Play {
                 "base_im" => $this->_upload("base_im")
             ));
             foreach ($fields as $key => $value) {
-                $image->$value = RequestMethods::post($value);
+                $image->$value = RequestMethods::post($value, "0");
             }
             $image->live = true;
             $image->save();

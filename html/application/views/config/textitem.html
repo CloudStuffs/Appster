@@ -9,19 +9,19 @@
             {/if}
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <img id="img" class="center-block" src="{echo CDN}uploads/images/{$looklike->base_im}" />
+                    <img id="img" class="center-block" src="{echo CDN}uploads/images/{$text->base_im}" />
                 </div>
                 <table class="table panel-body">
                     <thead>
                         <tr>
-                            <th>Image</th>
+                            <th>Text</th>
                             <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
                     {foreach $i in $items}
                         <tr>
-                            <td><img src="{echo CDN}uploads/images/{echo $i->image}"></td>
+                            <td>{echo $i->text}</td>
                             <td>
                                 <a href="/items/remove/{echo $i->id}" class="btn btn-xs btn-danger"><i class="fa fa-trash"></i> Delete</a>
                             </td>
@@ -30,11 +30,11 @@
                     </tbody>
                 </table>
             </div>
-            <form method="post" action="" enctype="multipart/form-data">
+            <form method="post" action="">
                 <div class="panel panel-default panel-body">
                     <div class="form-group">
-                        <label>Shuffle Image</label>
-                        <input type="file" class="form-control" name="image" required="">
+                        <label>Shuffle Text</label>
+                        <input type="text" class="form-control" name="text" required="">
                     </div>
                     <div class="form-group">
                         <label>Gender</label><br>
