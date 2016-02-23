@@ -181,6 +181,60 @@ class Config extends Play {
     /**
      * @before _secure, changeLayout, _admin
      */
+    public function shuffle() {
+        $this->seo(array("title" => "Shuffle Game", "view" => $this->getLayoutView()));
+        $view = $this->getActionView();
+        
+        if (RequestMethods::post("action") == "campaign") {
+            $shuffle = new \Shuffle();
+            $shuffle->live = true;
+            $shuffle->save();
+
+            $campaign = new \Campaign(array(
+                "title" => RequestMethods::post("title"),
+                "description" => RequestMethods::post("description", ""),
+                "image" => $this->_upload("promo_im"),
+                "type" => "shuffle",
+                "type_id" => $shuffle->id
+            ));
+            $campaign->save();
+
+            self::redirect("/config/shuffleitem/".$shuffle->id);
+        }
+    }
+
+    /**
+     * @before _secure, changeLayout, _admin
+     */
+    public function shuffleitem($shuffle_id) {
+        $this->seo(array("title" => "Shuffle Content", "view" => $this->getLayoutView()));
+        $view = $this->getActionView();
+        $fields = array("usr_x", "usr_y", "usr_w", "usr_h");
+
+        $shuffle = Shuffle::first(array("id = ?" => $shuffle_id));
+
+        if (RequestMethods::post("action") == "shuffle") {
+            $item = new ShuffleItem(array(
+                "shuffle_id" => $shuffle->id,
+                "meta_key" => "gender",
+                "meta_value" => RequestMethods::post("gender"),
+                "base_im" => $this->_upload("base_im"),
+                "live" => true
+            ));
+            foreach ($fields as $key => $value) {
+                $item->$value = RequestMethods::post($value, "0");
+            }
+            $item->save();
+        }
+        $items = ShuffleItem::all(array("shuffle_id = ?" => $shuffle->id));
+
+        $view->set("shuffle", $shuffle);
+        $view->set("items", $items);
+    }
+
+    /**
+     * @before _secure, changeLayout, _admin
+     */
     public function publish($id, $status) {
         $this->edit('Campaign', $id, 'live', $status);
     }
