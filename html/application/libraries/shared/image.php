@@ -51,4 +51,25 @@ class Image {
         }
         return $res;
 	}
+
+	/**
+	 * @param $resource
+	 * @param string $file Name of the file to which image should be output
+	 * @return boolean
+	 */
+	public static function create($resource, $file) {
+		$extension = pathinfo($file, PATHINFO_EXTENSION);
+        switch ($extension) {
+            case 'png':
+                $res = imagepng($resource, $file);
+                break;
+
+            case 'jpg':
+            case 'jpeg':
+                $res = imagejpeg($resource, $file);
+                break;
+        }
+        imagedestroy($resource);
+        return $res;
+	}
 }

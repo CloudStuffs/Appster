@@ -22,11 +22,11 @@ class Play extends Admin {
         $user_img = Shared\Image::resize($user_img, $game->usr_w, $game->usr_h);
 
         $src_file = $path . $game->base_im;
-        
+        $extension = pathinfo($src_file, PATHINFO_EXTENSION);
         if ($participant) {
             $filename = $participant->image;
         } else {
-            $filename = Shared\Markup::uniqueString() . '.jpg';
+            $filename = Shared\Markup::uniqueString() . ".$extension";
         }
         $final_img = $path . $filename;
         copy($src_file, $final_img);
@@ -74,8 +74,7 @@ class Play extends Admin {
         imagecopymerge($dest, $item_res, $game->src_x, $game->src_y, 0, 0, $game->src_w, $game->src_h, 100);
 
         unlink($vars['file']);
-        imagejpeg($dest, $vars['file']);
-        imagedestroy($dest);
+        Shared\Image::create($dest, $vars['file']);
 
         if (!$participant) {
             $participant = new Participant(array(
@@ -87,14 +86,7 @@ class Play extends Admin {
         $participant->image = $vars['filename'];
         $participant->save();
 
-        $p = Registry::get("MongoDB")->participants;
-        $p->insert(array(
-            'participant_id' => $participant->id,
-            'title' => $campaign->title,
-            'description' => $campaign->description,
-            'image' => $vars['filename'],
-            'url' => 'game/result/'.$participant->id
-        ));
+        $this->_saveParticipant($participant, $campaign, $vars);
         return $participant->image;
     }
 
@@ -120,8 +112,7 @@ class Play extends Admin {
         imagecopymerge($dest, $item_res, $game->src_x, $game->src_y, 0, 0, $game->src_w, $game->src_h, 100);
 
         unlink($vars['file']);
-        imagejpeg($dest, $vars['file']);
-        imagedestroy($dest);
+        Shared\Image::create($dest, $vars['file']);
 
         if (!$participant) {
             $participant = new Participant(array(
@@ -133,14 +124,7 @@ class Play extends Admin {
         $participant->image = $vars['filename'];
         $participant->save();
 
-        $p = Registry::get("MongoDB")->participants;
-        $p->insert(array(
-            'participant_id' => $participant->id,
-            'title' => $campaign->title,
-            'description' => $campaign->description,
-            'image' => $vars['filename'],
-            'url' => 'game/result/'.$participant->id
-        ));
+        $this->_saveParticipant($participant, $campaign, $vars);
         return $participant->image;
     }
 
@@ -167,8 +151,7 @@ class Play extends Admin {
         imagettftext($dest, $game->txt_size, $game->txt_angle, $game->txt_x, $game->txt_y, $grey, $font, $item->text);
 
         unlink($vars['file']);
-        imagejpeg($dest, $vars['file']);
-        imagedestroy($dest);
+        Shared\Image::create($dest, $vars['file']);
 
         if (!$participant) {
             $participant = new Participant(array(
@@ -180,14 +163,7 @@ class Play extends Admin {
         $participant->image = $vars['filename'];
         $participant->save();
 
-        $p = Registry::get("MongoDB")->participants;
-        $p->insert(array(
-            'participant_id' => $participant->id,
-            'title' => $campaign->title,
-            'description' => $campaign->description,
-            'image' => $vars['filename'],
-            'url' => 'game/result/'.$participant->id
-        ));
+        $this->_saveParticipant($participant, $campaign, $vars);
         return $participant->image;
     }
 
@@ -197,30 +173,36 @@ class Play extends Admin {
             return $participant->image;
         }
 
-        $path = APP_PATH.'/public/assets/uploads/images/';
-        $vars = $this->_setup($path, $game, $participant);
-        $dest = $vars['dest'];
-
         $items = ShuffleItem::all(array("shuffle_id = ?" => $game->id, "meta_key = ?" => "gender", "meta_value = ?" => strtolower($this->user->gender)));
         $key = rand(0, count($items) - 1);
         $item = $items[$key];
-        
-        imagecopymerge($dest, $vars['usr'], $game->usr_x, $game->usr_y, 0, 0, $game->usr_w, $game->usr_h, 100);
-        
-        $item_img = Shared\Image::resize($path . $item->image, $game->src_w, $game->src_h);
-        $item_res = Shared\Image::resource($item_img);
 
-        $grey = imagecolorallocate($dest, 0, 0, 0); // Create black color
-
-        // replace $font with font path
-        $font = APP_PATH.'/public/assets/fonts/monaco.ttf';
-        imagettftext($dest, $game->txt_size, 0, $game->txt_x, $game->txt_y, $grey, $font, $item->text);
+        $vars = array(); $user = $this->user; $path = APP_PATH.'/public/assets/uploads/images/';
+        $user_img = "{$path}user-".$user->fbid.".jpg";
+        if (!file_exists($user_img)) {
+            if (!copy('http://graph.facebook.com/'.$user->fbid.'/picture?width='.$item->usr_w.'&height='.$item->usr_h, $user_img)) {
+                die('Could not copy image');
+            }
+        }
         
-        imagecopymerge($dest, $item_res, $game->src_x, $game->src_y, 0, 0, $game->src_w, $game->src_h, 100);
+        $src_file = $path . $item->base_im;
+        $extension = pathinfo($src_file, PATHINFO_EXTENSION);
+        if ($participant) {
+            $filename = $participant->image;
+        } else {
+            $filename = Shared\Markup::uniqueString() . ".$extension";
+        }
 
-        unlink($vars['file']);
-        imagejpeg($dest, $vars['file']);
-        imagedestroy($dest);
+        $final_img = $path . $filename;
+        copy($src_file, $final_img);
+
+        $dest = Shared\Image::resource($final_img);
+        $vars['file'] = $final_img; $vars['filename'] = $filename;
+        $img = Shared\Image::resize($user_img, $item->usr_w, $item->usr_h);
+        $vars['usr'] = Shared\Image::resource($img);
+        
+        imagecopymerge($dest, $vars['usr'], $item->usr_x, $item->usr_y, 0, 0, $item->usr_w, $item->usr_h, 100);
+        Shared\Image::create($dest, $vars['file']);
 
         if (!$participant) {
             $participant = new Participant(array(
@@ -232,14 +214,22 @@ class Play extends Admin {
         $participant->image = $vars['filename'];
         $participant->save();
 
-        $p = Registry::get("MongoDB")->participants;
-        $p->insert(array(
-            'participant_id' => $participant->id,
-            'title' => $campaign->title,
-            'description' => $campaign->description,
-            'image' => $vars['filename'],
-            'url' => 'game/result/'.$participant->id
-        ));
+        $this->_saveParticipant($participant, $campaign, $vars);
         return $participant->image;
+    }
+
+    private function _saveParticipant($participant, $campaign, $vars) {
+        $p = Registry::get("MongoDB")->participants;
+        $record = $p->findOne(array('participant_id' => (int) $participant->id, 'campaign_id' => (int) $campaign->id));
+        if (!$record) {
+            $p->insert(array(
+                'participant_id' => (int) $participant->id,
+                'campaign_id' => (int) $campaign->id,
+                'title' => $campaign->title,
+                'description' => $campaign->description,
+                'image' => $vars['filename'],
+                'url' => 'game/result/'.$participant->id
+            ));
+        }
     }
 }
