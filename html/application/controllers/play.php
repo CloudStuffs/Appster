@@ -190,4 +190,56 @@ class Play extends Admin {
         ));
         return $participant->image;
     }
+
+    protected function _shuffleprocess($game, $campaign, $play_again = true) {
+        $participant = Participant::first(array("user_id = ?" => $this->user->id, "campaign_id = ?" => $campaign->id));
+        if ($participant && !$play_again) {
+            return $participant->image;
+        }
+
+        $path = APP_PATH.'/public/assets/uploads/images/';
+        $vars = $this->_setup($path, $game, $participant);
+        $dest = $vars['dest'];
+
+        $items = ShuffleItem::all(array("shuffle_id = ?" => $game->id, "meta_key = ?" => "gender", "meta_value = ?" => strtolower($this->user->gender)));
+        $key = rand(0, count($items) - 1);
+        $item = $items[$key];
+        
+        imagecopymerge($dest, $vars['usr'], $game->usr_x, $game->usr_y, 0, 0, $game->usr_w, $game->usr_h, 100);
+        
+        $item_img = Shared\Image::resize($path . $item->image, $game->src_w, $game->src_h);
+        $item_res = Shared\Image::resource($item_img);
+
+        $grey = imagecolorallocate($dest, 0, 0, 0); // Create black color
+
+        // replace $font with font path
+        $font = APP_PATH.'/public/assets/fonts/monaco.ttf';
+        imagettftext($dest, $game->txt_size, 0, $game->txt_x, $game->txt_y, $grey, $font, $item->text);
+        
+        imagecopymerge($dest, $item_res, $game->src_x, $game->src_y, 0, 0, $game->src_w, $game->src_h, 100);
+
+        unlink($vars['file']);
+        imagejpeg($dest, $vars['file']);
+        imagedestroy($dest);
+
+        if (!$participant) {
+            $participant = new Participant(array(
+                "user_id" => $this->user->id,
+                "campaign_id" => $campaign->id,
+                "live" => true
+            ));
+        }
+        $participant->image = $vars['filename'];
+        $participant->save();
+
+        $p = Registry::get("MongoDB")->participants;
+        $p->insert(array(
+            'participant_id' => $participant->id,
+            'title' => $campaign->title,
+            'description' => $campaign->description,
+            'image' => $vars['filename'],
+            'url' => 'game/result/'.$participant->id
+        ));
+        return $participant->image;
+    }
 }

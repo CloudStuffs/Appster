@@ -113,6 +113,10 @@ class Game extends Config {
             case 'text':
                 $img = $this->_textprocess($game, $campaign);
                 break;
+
+            case 'shuffle':
+                $img = $this->_shuffleprocess($game, $campaign);
+                break;
         }
 
         $participant = Participant::first(array("user_id = ?" => $this->user->id, "campaign_id = ?" => $campaign->id));
