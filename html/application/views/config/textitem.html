@@ -19,11 +19,13 @@
                         </tr>
                     </thead>
                     <tbody>
+                    {script $parts = explode("/", URL)}
+                    {script $pos = count($parts) - 2}
                     {foreach $i in $items}
                         <tr>
                             <td>{echo $i->text}</td>
                             <td>
-                                <a href="/items/remove/{echo $i->id}" class="btn btn-xs btn-danger"><i class="fa fa-trash"></i> Delete</a>
+                                <a href="/items/remove/{echo $i->id}/{echo $parts[$pos]}" class="btn btn-xs btn-danger"><i class="fa fa-trash"></i> Delete</a>
                             </td>
                         </tr>
                     {/foreach}

@@ -202,6 +202,11 @@ class Play extends Admin {
         $vars['usr'] = Shared\Image::resource($img);
         
         imagecopymerge($dest, $vars['usr'], $item->usr_x, $item->usr_y, 0, 0, $item->usr_w, $item->usr_h, 100);
+
+        // add text
+        $grey = imagecolorallocate($dest, 0, 0, 0); // Create black color
+        $font = APP_PATH.'/public/assets/fonts/monaco.ttf';
+        imagettftext($dest, $item->txt_size, 0, $item->txt_x, $item->txt_y, $grey, $font, $user->name);
         Shared\Image::create($dest, $vars['file']);
 
         if (!$participant) {

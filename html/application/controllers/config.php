@@ -209,7 +209,7 @@ class Config extends Play {
     public function shuffleitem($shuffle_id) {
         $this->seo(array("title" => "Shuffle Content", "view" => $this->getLayoutView()));
         $view = $this->getActionView();
-        $fields = array("usr_x", "usr_y", "usr_w", "usr_h");
+        $fields = array("usr_x", "usr_y", "usr_w", "usr_h", "txt_x", "txt_y", "txt_size", "txt_angle", "txt_color");
 
         $shuffle = Shuffle::first(array("id = ?" => $shuffle_id));
 

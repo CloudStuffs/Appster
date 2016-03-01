@@ -16,11 +16,13 @@
                         </tr>
                     </thead>
                     <tbody>
+                    {script $parts = explode("/", URL)}
+                    {script $pos = count($parts) - 2}
                     {foreach $i in $items}
                         <tr>
                             <td><img src="{echo CDN}uploads/images/{echo $i->base_im}"></td>
                             <td>
-                                <a href="/items/remove/{echo $i->id}" class="btn btn-xs btn-danger"><i class="fa fa-trash"></i> Delete</a>
+                                <a href="/items/remove/{echo $i->id}/{echo $parts[$pos]}" class="btn btn-xs btn-danger"><i class="fa fa-trash"></i> Delete</a>
                             </td>
                         </tr>
                     {/foreach}
@@ -61,7 +63,40 @@
                                 <input type="number" class="form-control" placeholder="" name="usr_h" required="" style="width: 100px;">
                             </div>
                         </div>
-                    </div>
+                    </div><br>
+                    <label><input type="radio" name="coords" value="txt"> User Text Coordinates</label>
+                        <div class="form-inline">
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <div class="input-group-addon">TXT_X</div>
+                                    <input type="number" class="form-control" placeholder="" name="txt_x" required="" style="width: 100px;">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <div class="input-group-addon">TXT_Y</div>
+                                    <input type="number" class="form-control" placeholder="" name="txt_y" required="" style="width: 100px;">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <div class="input-group-addon">Size</div>
+                                    <input type="number" class="form-control" placeholder="" name="txt_size" required="" style="width: 100px;" value="13">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <div class="input-group-addon">Angle</div>
+                                    <input type="number" class="form-control" placeholder="" name="txt_angle" required="" style="width: 100px;" value="0">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <div class="input-group-addon">Color</div>
+                                    <input type="text" class="form-control" placeholder="" name="txt_color" required="" style="width: 100px;" value="#000000">
+                                </div>
+                            </div>
+                        </div>
                     <hr>
                     <div class="form-group">
                         <label>Gender</label><br>

@@ -14,7 +14,7 @@
                     <tbody>
                     {foreach $c in $campaigns}
                         <tr>
-                            <td><a href="/game/{echo $c->type}item/{echo $c->type_id}">{$c->title}</a></td>
+                            <td><a href="/config/{echo $c->type}item/{echo $c->type_id}">{$c->title}</a></td>
                             <td><span class="label label-info">{echo ucfirst($c->type)}</span></td>
                             <td>
                                 {if $c->live}

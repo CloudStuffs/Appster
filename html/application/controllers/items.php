@@ -11,13 +11,26 @@ class Items extends Admin {
 	/**
 	 * @before _secure, _admin, changeLayout
 	 */
-	public function remove($item_id) {
+	public function remove($item_id, $type) {
 		$this->noview();
 
-		$item = Item::first(array("id = ?" => $item_id));
-		if ($item) {
-			@unlink(APP_PATH.'/public/assets/uploads/images/'. $item->image);
-			$item->delete();
+		try {
+			$item = $type::first(array("id = ?" => $item_id));
+			if ($item) {
+				$property = null;
+				if (property_exists($item, "_image")) {
+					$property = "image";
+				} elseif (property_exists($item, "_base_im")) {
+					$property = "base_im";
+				}
+
+				if ($property) {
+					@unlink(APP_PATH.'/public/assets/uploads/images/'. $item->$property);
+				}
+				$item->delete();
+			}
+		} catch (\Exception $e) {
+			// die($e->getMessage());
 		}
 		self::redirect($_SERVER['HTTP_REFERER']);
 	}
