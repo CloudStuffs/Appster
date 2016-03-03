@@ -27,6 +27,9 @@ class Game extends Config {
         ));
         $view = $this->getActionView();
 
+        $items = Participant::all(array(), array("DISTINCT campaign_id"), "created", "desc", 3, 1);
+        $view->set("items", $items);
+
         $view->set("campaign", $campaign);
         $view->set("participant", $participant);
     }
@@ -120,7 +123,8 @@ class Game extends Config {
         }
 
         $participant = Participant::first(array("user_id = ?" => $this->user->id, "campaign_id = ?" => $campaign->id));
-
+        $items = Participant::all(array(), array("DISTINCT campaign_id"), "created", "desc", 3, 1);
+        $view->set("items", $items);
         $view->set("img", $img);
         $view->set("participant", $participant);
     }

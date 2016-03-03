@@ -4,7 +4,7 @@
             <div class="col-md-8">
                 <div class="jumbotron">
                     <p class="lead">
-                    	<div class="fb-share-button" data-href="http://dinchakapps.com/game/result/{$participant->id}" data-layout="link"></div>
+                        <div class="fb-share-button" data-href="http://dinchakapps.com/game/result/{$participant->id}" data-layout="link"></div>
                         <button type="button" class="btn btn-success btn-lg btn-block fbLogin" data-action="campaign" data-campaign="{echo $campaign->id}">Start</button>
                     </p>
                     <img src="{echo CDN.'uploads/images/'.$participant->image}" class="img-thumbnail">
@@ -13,15 +13,31 @@
             </div>
             <div class="col-md-4">
                 <script type="text/javascript">
-                    atOptions = {
-                        'key' : '281808e30140cf750f28f4b66c625fac',
-                        'format' : 'iframe',
-                        'height' : 250,
-                        'width' : 300,
-                        'params' : {}
-                    };
-                    document.write('<scr' + 'ipt type="text/javascript" src="http' + (location.protocol === 'https:' ? 's' : '') + '://www.bnhtml.com/invoke.js"></scr' + 'ipt>');
+                atOptions = {
+                    'key': '281808e30140cf750f28f4b66c625fac',
+                    'format': 'iframe',
+                    'height': 250,
+                    'width': 300
+                };
+                document.write('<scr' + 'ipt type="text/javascript" src="http' + (location.protocol === 'https:' ? 's' : '') + '://www.bnhtml.com/invoke.js"></scr' + 'ipt>');
                 </script>
+            </div>
+        </div>
+    </div>
+    <div class="container fadeInUp">
+        <div class="row">
+            <div class="card-deck-wrapper">
+                {foreach $item in $items} {script $item = Campaign::first(array("id = ?" => $item->campaign_id), array("id", "live", "image", "title", "description"))}
+                <div class="col-md-4 col-xs-12">
+                    <div class="card">
+                        <a href="/game/view/{echo Framework\StringMethods::url($item->title)}/{echo $item->id}"><img class="card-img-top img-responsive" src="{echo CDN}uploads/images/{echo $item->image}" alt="Look Like Image"></a>
+                        <div class="card-block">
+                            <h4 class="card-title">{echo $item->title}</h4>
+                            <p class="card-text">{echo $item->description}</p>
+                        </div>
+                    </div>
+                </div>
+                {/foreach}
             </div>
         </div>
     </div>
