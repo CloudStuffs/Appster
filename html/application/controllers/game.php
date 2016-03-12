@@ -127,5 +127,6 @@ class Game extends Config {
         $view->set("items", $items);
         $view->set("img", $img);
         $view->set("participant", $participant);
+        $view->set("campaign", $campaign);
     }
 }

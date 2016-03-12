@@ -14,7 +14,7 @@
             <div class="col-md-8">
                 <div class="jumbotron">
                     <h3 class="text-center">{echo $campaign->title}</h3>
-                    <img src="{echo CDN.'uploads/images/'.$campaign->image}" class="img-thumbnail">
+                    <img src="{echo CDN.'uploads/images/'.$campaign->image}" class="img-thumbnail"><br><br>
                     <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
                     <!-- dinchak2 -->
                     <ins class="adsbygoogle"
@@ -28,6 +28,7 @@
                     <p class="lead">
                         <small><i class="ion-social-facebook"></i> You will be required to login from facebook</small>
                         <button type="button" class="btn btn-success btn-lg btn-block fbLogin" data-action="campaign" data-campaign="{echo $campaign->id}">Click to Find {echo $campaign->title}</button>
+                        <small><div class="fb-send" data-href="http://dinchakapps.com/game/result/{$participant->id}"></div></small>
                     </p>
                     <p class="lead">{echo $campaign->description}</p>
                     <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>

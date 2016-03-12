@@ -13,6 +13,7 @@
             </script>
             <div class="col-md-8">
                 <div class="jumbotron">
+                    <h3 class="text-center">{echo $campaign->title}</h3>
                     <p class="text-center"><img src="{echo CDN.'uploads/images/'.$participant->image}" class="img-thumbnail"></p>
                     <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
                     <!-- dinchak2 -->
@@ -64,7 +65,6 @@
                         <a href="/game/view/{echo Framework\StringMethods::url($item->title)}/{echo $item->id}"><img class="card-img-top img-responsive" src="{echo CDN}uploads/images/{echo $item->image}" alt="Look Like Image"></a>
                         <div class="card-block">
                             <h4 class="card-title">{echo $item->title}</h4>
-                            <p class="card-text">{echo $item->description}</p>
                         </div>
                     </div>
                 </div>
