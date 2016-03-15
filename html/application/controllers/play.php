@@ -70,6 +70,7 @@ class Play extends Admin {
         // replace $font with font path
         $font = APP_PATH.'/public/assets/fonts/monaco.ttf';
         imagettftext($dest, $game->txt_size, 0, $game->txt_x, $game->txt_y, $grey, $font, $item->text);
+        imagettftext($dest, $game->utxt_size, 0, $game->utxt_x, $game->utxt_y, $grey, $font, $this->user->name);
         
         imagecopymerge($dest, $item_res, $game->src_x, $game->src_y, 0, 0, $game->src_w, $game->src_h, 100);
 
@@ -108,6 +109,9 @@ class Play extends Admin {
         
         $item_img = Shared\Image::resize($path . $item->image, $game->src_w, $game->src_h);
         $item_res = Shared\Image::resource($item_img);
+
+        $font = APP_PATH.'/public/assets/fonts/monaco.ttf';
+        imagettftext($dest, $game->utxt_size, 0, $game->utxt_x, $game->utxt_y, $grey, $font, $this->user->name);
         
         imagecopymerge($dest, $item_res, $game->src_x, $game->src_y, 0, 0, $game->src_w, $game->src_h, 100);
 
@@ -149,6 +153,7 @@ class Play extends Admin {
         // replace $font with font path
         $font = APP_PATH.'/public/assets/fonts/monaco.ttf';
         imagettftext($dest, $game->txt_size, $game->txt_angle, $game->txt_x, $game->txt_y, $grey, $font, $item->text);
+        imagettftext($dest, $game->utxt_size, 0, $game->utxt_x, $game->utxt_y, $grey, $font, $this->user->name);
 
         unlink($vars['file']);
         Shared\Image::create($dest, $vars['file']);

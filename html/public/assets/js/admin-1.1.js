@@ -132,7 +132,7 @@ function readImage() {
 (function (window, $) {
     var Img = (function () {
         function Img() {
-            this.types = ['src', 'txt', 'usr'];
+            this.types = ['src', 'txt', 'usr', 'utxt'];
             this.el = $('#img');
         }
 

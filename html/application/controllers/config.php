@@ -14,7 +14,7 @@ class Config extends Play {
 	public function imagetext() {
 		$this->seo(array("title" => "ImageText Game", "view" => $this->getLayoutView()));
         $view = $this->getActionView();
-        $fields = array("src_x", "src_y", "src_h", "src_w", "usr_x", "usr_y", "txt_x", "txt_y", "usr_w", "usr_h", "txt_size", "txt_angle", "txt_color");
+        $fields = array("src_x", "src_y", "src_h", "src_w", "usr_x", "usr_y", "txt_x", "txt_y", "usr_w", "usr_h", "txt_size", "txt_angle", "txt_color", "utxt_x", "utxt_y", "utxt_size", "utxt_angle", "utxt_color");
         
         if (RequestMethods::post("action") == "campaign") {
             $imagetext = new \ImageText(array(
@@ -72,7 +72,7 @@ class Config extends Play {
     public function text() {
         $this->seo(array("title" => "Text Game", "view" => $this->getLayoutView()));
         $view = $this->getActionView();
-        $fields = array("usr_x", "usr_y", "txt_x", "txt_y", "usr_w", "usr_h", "txt_size", "txt_angle", "txt_color");
+        $fields = array("usr_x", "usr_y", "txt_x", "txt_y", "usr_w", "usr_h", "txt_size", "txt_angle", "txt_color", "utxt_x", "utxt_y", "utxt_size", "utxt_angle", "utxt_color");
         
         if (RequestMethods::post("action") == "campaign") {
             $text = new \Text(array(
@@ -128,7 +128,7 @@ class Config extends Play {
     public function image() {
         $this->seo(array("title" => "Image Game", "view" => $this->getLayoutView()));
         $view = $this->getActionView();
-        $fields = array("src_x", "src_y", "src_h", "src_w", "usr_x", "usr_y", "usr_w", "usr_h");
+        $fields = array("src_x", "src_y", "src_h", "src_w", "usr_x", "usr_y", "usr_w", "usr_h", "utxt_x", "utxt_y", "utxt_size", "utxt_angle", "utxt_color");
         
         if (RequestMethods::post("action") == "campaign") {
             $image = new \Image(array(
