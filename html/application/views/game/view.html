@@ -15,6 +15,8 @@
                 <div class="jumbotron">
                     <h3 class="text-center">{echo $campaign->title}</h3>
                     <img src="{echo CDN.'uploads/images/'.$campaign->image}" class="img-thumbnail"><br><br>
+					<p class="lead">
+                        <small><b><i class="ion-social-facebook"></i> Click here to login from facebook</small></b>
                     <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
                     <!-- dinchak2 -->
                     <ins class="adsbygoogle"
@@ -25,13 +27,18 @@
                     <script>
                     (adsbygoogle = window.adsbygoogle || []).push({});
                     </script>
-                    <p class="lead">
-                        <small><i class="ion-social-facebook"></i> You will be required to login from facebook</small>
+                    
                         <button type="button" class="btn btn-success btn-lg btn-block fbLogin" data-action="campaign" data-campaign="{echo $campaign->id}">Click to Find {echo $campaign->title}</button>
                         <small><div class="fb-send" data-href="http://dinchakapps.com/game/result/{$participant->id}"></div></small>
                     </p>
                     <p class="lead">{echo $campaign->description}</p>
-                    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+					
+            </div>
+            </div>
+			<br>
+			<br>
+            <div class="col-md-4">
+			<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
                     <!-- dinchak_3 -->
                     <ins class="adsbygoogle"
                          style="display:block"
@@ -41,19 +48,7 @@
                     <script>
                     (adsbygoogle = window.adsbygoogle || []).push({});
                     </script>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <script type="text/javascript">
-                    atOptions = {
-                        'key' : '281808e30140cf750f28f4b66c625fac',
-                        'format' : 'iframe',
-                        'height' : 250,
-                        'width' : 300,
-                        'params' : {}
-                    };
-                    document.write('<scr' + 'ipt type="text/javascript" src="http' + (location.protocol === 'https:' ? 's' : '') + '://www.bnhtml.com/invoke.js"></scr' + 'ipt>');
-                </script>
+                
             </div>
         </div>
     </div>

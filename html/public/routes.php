@@ -14,6 +14,11 @@ $routes = array(
         "action" => "profile"
     ),
     array(
+        "pattern" => "privacy",
+        "controller" => "home",
+        "action" => "privacy"
+    ),
+    array(
         "pattern" => "undefined",
         "controller" => "home",
         "action" => "index"
