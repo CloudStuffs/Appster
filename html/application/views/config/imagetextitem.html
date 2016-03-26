@@ -11,28 +11,30 @@
                 <div class="panel-heading">
                     <img id="img" class="center-block" src="{echo CDN}uploads/images/{$imagetext->base_im}" />
                 </div>
-                <table class="table panel-body">
-                    <thead>
-                        <tr>
-                            <th>Image</th>
-                            <th>Text</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    {script $parts = explode("/", URL)}
-                    {script $pos = count($parts) - 2}
-                    {foreach $i in $imagetextitems}
-                        <tr>
-                            <td><img src="{echo CDN}uploads/images/{echo $i->image}"></td>
-                            <td>{echo $i->text}</td>
-                            <td>
-                                <a href="/items/remove/{echo $i->id}/{echo $parts[$pos]}" class="btn btn-xs btn-danger"><i class="fa fa-trash"></i> Delete</a>
-                            </td>
-                        </tr>
-                    {/foreach}
-                    </tbody>
-                </table>
+                <div class="table-responsive">
+                    <table class="table panel-body">
+                        <thead>
+                            <tr>
+                                <th>Image</th>
+                                <th>Text</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {script $parts = explode("/", URL)}
+                        {script $pos = count($parts) - 2}
+                        {foreach $i in $imagetextitems}
+                            <tr>
+                                <td><img src="{echo CDN}uploads/images/{echo $i->image}"></td>
+                                <td>{echo $i->text}</td>
+                                <td>
+                                    <a href="/items/remove/{echo $i->id}/{echo $parts[$pos]}" class="btn btn-xs btn-danger"><i class="fa fa-trash"></i> Delete</a>
+                                </td>
+                            </tr>
+                        {/foreach}
+                        </tbody>
+                    </table>
+                </div>
             </div>
             <form method="post" action="" enctype="multipart/form-data">
                 <div class="panel panel-default panel-body">

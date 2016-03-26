@@ -20,7 +20,11 @@ class Auth extends Controller {
             "live" => 1,
             "admin" => 0
         ));
-        $user->save();
+        if ($user->validate()) {
+            $user->save();
+        } else {
+            throw new \Exception("Error Processing Request");
+        }
 
         return $user;
     }
@@ -34,11 +38,15 @@ class Auth extends Controller {
             $email = RequestMethods::post("email");
             $user = User::first(array("email = ?" => $email));
             if (!$user) {
-                $user = $this->_register();
+                try {
+                    $user = $this->_register();
+                } catch (\Exception $e) {
+                    self::redirect("/");
+                }
             }
             $this->setUser($user);
             
-            $redirect = RequestMethods::post("loc");
+            $redirect = RequestMethods::post("loc", "");
             if ($redirect != '') {
                 $token = Shared\Markup::uniqueString();
                 $session->set('CampaignAccessToken', $token);

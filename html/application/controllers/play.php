@@ -9,6 +9,12 @@ use Framework\Registry as Registry;
 use \Curl\Curl;
 
 class Play extends Admin {
+    protected function _makeColor(&$dest, $hexCode) {
+        $text_color = Shared\Image::rgbFromHex($hexCode);
+        $tt_color = imagecolorallocate($dest, $text_color['r'], $text_color['g'], $text_color['b']); // Create color from hex code
+
+        return $tt_color;
+    }
 
     protected function _setup($path, $game, $participant) {
         $user = $this->user;
@@ -65,27 +71,16 @@ class Play extends Admin {
         $item_img = Shared\Image::resize($path . $item->image, $game->src_w, $game->src_h);
         $item_res = Shared\Image::resource($item_img);
 
-        $grey = imagecolorallocate($dest, 0, 0, 0); // Create black color
-
-        // replace $font with font path
         $font = APP_PATH.'/public/assets/fonts/monaco.ttf';
-        imagettftext($dest, $game->txt_size, 0, $game->txt_x, $game->txt_y, $grey, $font, $item->text);
-        imagettftext($dest, $game->utxt_size, 0, $game->utxt_x, $game->utxt_y, $grey, $font, $this->user->name);
+        $tt_color = $this->_makeColor($dest, $game->txt_color);
+        imagettftext($dest, $game->txt_size, 0, $game->txt_x, $game->txt_y, $tt_color, $font, $item->text);
+        $tt_color = $this->_makeColor($dest, $game->utxt_color);
+        imagettftext($dest, $game->utxt_size, 0, $game->utxt_x, $game->utxt_y, $tt_color, $font, $this->user->name);
         
         imagecopymerge($dest, $item_res, $game->src_x, $game->src_y, 0, 0, $game->src_w, $game->src_h, 100);
 
         unlink($vars['file']);
         Shared\Image::create($dest, $vars['file']);
-
-        if (!$participant) {
-            $participant = new Participant(array(
-                "user_id" => $this->user->id,
-                "campaign_id" => $campaign->id,
-                "live" => true
-            ));
-        }
-        $participant->image = $vars['filename'];
-        $participant->save();
 
         $this->_saveParticipant($participant, $campaign, $vars);
         return $participant->image;
@@ -111,22 +106,13 @@ class Play extends Admin {
         $item_res = Shared\Image::resource($item_img);
 
         $font = APP_PATH.'/public/assets/fonts/monaco.ttf';
-        imagettftext($dest, $game->utxt_size, 0, $game->utxt_x, $game->utxt_y, $grey, $font, $this->user->name);
+        $tt_color = $this->_makeColor($dest, $game->utxt_color);
+        imagettftext($dest, $game->utxt_size, 0, $game->utxt_x, $game->utxt_y, $tt_color, $font, $this->user->name);
         
         imagecopymerge($dest, $item_res, $game->src_x, $game->src_y, 0, 0, $game->src_w, $game->src_h, 100);
 
         unlink($vars['file']);
         Shared\Image::create($dest, $vars['file']);
-
-        if (!$participant) {
-            $participant = new Participant(array(
-                "user_id" => $this->user->id,
-                "campaign_id" => $campaign->id,
-                "live" => true
-            ));
-        }
-        $participant->image = $vars['filename'];
-        $participant->save();
 
         $this->_saveParticipant($participant, $campaign, $vars);
         return $participant->image;
@@ -148,25 +134,15 @@ class Play extends Admin {
         
         imagecopymerge($dest, $vars['usr'], $game->usr_x, $game->usr_y, 0, 0, $game->usr_w, $game->usr_h, 100);
 
-        $grey = imagecolorallocate($dest, 0, 0, 0); // Create black color
-
         // replace $font with font path
         $font = APP_PATH.'/public/assets/fonts/monaco.ttf';
-        imagettftext($dest, $game->txt_size, $game->txt_angle, $game->txt_x, $game->txt_y, $grey, $font, $item->text);
-        imagettftext($dest, $game->utxt_size, 0, $game->utxt_x, $game->utxt_y, $grey, $font, $this->user->name);
+        $tt_color = $this->_makeColor($dest, $game->txt_color);
+        imagettftext($dest, $game->txt_size, $game->txt_angle, $game->txt_x, $game->txt_y, $tt_color, $font, $item->text);
+        $tt_color = $this->_makeColor($dest, $game->utxt_color);
+        imagettftext($dest, $game->utxt_size, 0, $game->utxt_x, $game->utxt_y, $tt_color, $font, $this->user->name);
 
         unlink($vars['file']);
         Shared\Image::create($dest, $vars['file']);
-
-        if (!$participant) {
-            $participant = new Participant(array(
-                "user_id" => $this->user->id,
-                "campaign_id" => $campaign->id,
-                "live" => true
-            ));
-        }
-        $participant->image = $vars['filename'];
-        $participant->save();
 
         $this->_saveParticipant($participant, $campaign, $vars);
         return $participant->image;
@@ -209,11 +185,16 @@ class Play extends Admin {
         imagecopymerge($dest, $vars['usr'], $item->usr_x, $item->usr_y, 0, 0, $item->usr_w, $item->usr_h, 100);
 
         // add text
-        $grey = imagecolorallocate($dest, 0, 0, 0); // Create black color
+        $tt_color = $this->_makeColor($dest, $item->txt_color);
         $font = APP_PATH.'/public/assets/fonts/monaco.ttf';
-        imagettftext($dest, $item->txt_size, 0, $item->txt_x, $item->txt_y, $grey, $font, $user->name);
+        imagettftext($dest, $item->txt_size, 0, $item->txt_x, $item->txt_y, $tt_color, $font, $user->name);
         Shared\Image::create($dest, $vars['file']);
 
+        $this->_saveParticipant($participant, $campaign, $vars);
+        return $participant->image;
+    }
+
+    private function _saveParticipant($participant, $campaign, $vars) {
         if (!$participant) {
             $participant = new Participant(array(
                 "user_id" => $this->user->id,
@@ -224,11 +205,6 @@ class Play extends Admin {
         $participant->image = $vars['filename'];
         $participant->save();
 
-        $this->_saveParticipant($participant, $campaign, $vars);
-        return $participant->image;
-    }
-
-    private function _saveParticipant($participant, $campaign, $vars) {
         $p = Registry::get("MongoDB")->participants;
         $record = $p->findOne(array('participant_id' => (int) $participant->id, 'campaign_id' => (int) $campaign->id));
         if (!$record) {

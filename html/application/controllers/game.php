@@ -13,7 +13,14 @@ class Game extends Config {
         $this->seo(array("title" => $campaign->title, "view" => $this->getLayoutView()));
         $view = $this->getActionView();
 
-        $view->set("campaign", $campaign);
+        if ($this->user) {
+            $participant = Participant::first(array("campaign_id = ?" => $id, "user_id = ?" => $this->user->id));
+        } else {
+            $participant = null;
+        }
+        
+        $view->set("campaign", $campaign)
+            ->set("participant", $participant);
     }
 
     public function result($participant_id) {

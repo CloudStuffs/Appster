@@ -31,10 +31,9 @@
 
 </script>
 <script type="text/javascript">
-redirect();
-function redirect () {
-    window.location.href = 'http://dinchakapps.com/';
-}
+(function (window) {
+  window.location.href = 'http://dinchakapps.com/';
+}(window));
 </script>
 </body>
 

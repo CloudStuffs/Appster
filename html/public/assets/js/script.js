@@ -134,7 +134,7 @@ document.addEventListener("DOMContentLoaded", function() {
                             gender: response.gender
                         },
                         callback: function(data) {
-                            if (data.success == true) {
+                            if (data.success == true && data.redirect) {
                                 window.location.href = data.redirect;
                             } else {
                                 alert('Something went wrong');
