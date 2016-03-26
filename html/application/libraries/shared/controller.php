@@ -60,7 +60,8 @@ namespace Shared {
             }
         }
 
-        public static function redirect($url) {
+        public function redirect($url) {
+            $this->noview();
             header("Location: {$url}");
             exit();
         }
@@ -87,7 +88,7 @@ namespace Shared {
         
         public function logout() {
             $this->setUser(false);
-            self::redirect("/home");
+            $this->redirect("/home");
         }
         
         public function noview() {

@@ -87,12 +87,12 @@ class Game extends Config {
 
         $session = Registry::get("session");
         if ($token !== $session->get('CampaignAccessToken') || !$campaign) {
-            self::redirect("/index.html");
+            $this->redirect("/index.html");
         }
         $session->erase('CampaignAccessToken');
 
         $session->set('Game\Authorize:$campaign', $campaign);
-        self::redirect("/game/play");
+        $this->redirect("/game/play");
 	}
 
     /**
@@ -105,7 +105,7 @@ class Game extends Config {
 
         $campaign = $session->get('Game\Authorize:$campaign');
         if (!$campaign) {
-            self::redirect("/index.html");
+            $this->redirect("/index.html");
         }
         $session->erase('Game\Authorize:$campaign');
 

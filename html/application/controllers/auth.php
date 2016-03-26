@@ -41,7 +41,7 @@ class Auth extends Controller {
                 try {
                     $user = $this->_register();
                 } catch (\Exception $e) {
-                    self::redirect("/");
+                    $this->redirect("/");
                 }
             }
             $this->setUser($user);

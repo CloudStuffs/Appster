@@ -35,7 +35,7 @@ class Config extends Play {
             ));
             $campaign->save();
 
-            self::redirect("/config/imagetextitem/".$imagetext->id);
+            $this->redirect("/config/imagetextitem/".$imagetext->id);
         }
 	}
 
@@ -93,7 +93,7 @@ class Config extends Play {
             ));
             $campaign->save();
 
-            self::redirect("/config/textitem/".$text->id);
+            $this->redirect("/config/textitem/".$text->id);
         }
     }
 
@@ -149,7 +149,7 @@ class Config extends Play {
             ));
             $campaign->save();
 
-            self::redirect("/config/imageitem/".$image->id);
+            $this->redirect("/config/imageitem/".$image->id);
         }
     }
 
@@ -199,7 +199,7 @@ class Config extends Play {
             ));
             $campaign->save();
 
-            self::redirect("/config/shuffleitem/".$shuffle->id);
+            $this->redirect("/config/shuffleitem/".$shuffle->id);
         }
     }
 

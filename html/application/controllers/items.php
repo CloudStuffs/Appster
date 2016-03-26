@@ -32,6 +32,6 @@ class Items extends Admin {
 		} catch (\Exception $e) {
 			// die($e->getMessage());
 		}
-		self::redirect($_SERVER['HTTP_REFERER']);
+		$this->redirect($_SERVER['HTTP_REFERER']);
 	}
 }
