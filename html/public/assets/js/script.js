@@ -71,6 +71,7 @@ document.addEventListener("DOMContentLoaded", function() {
     var FbModel = (function () {
         function FbModel() {
             this.loaded = false;
+            this.loggedIn = false;
         }
 
         FbModel.prototype = {
@@ -83,28 +84,33 @@ document.addEventListener("DOMContentLoaded", function() {
                     appId: '179747022387337',
                     version: 'v2.5'
                 });
-                this.loaded = true;
+                this.loaded = true; var self = this;
+
+                FB.getLoginStatus(function (response) {
+                    if (response.status === 'connected') {
+                        self.loggedIn = true;
+                    }
+                });
             },
             login: function(el) {
                 var self = this;
                 if (!this.loaded) {
                     self.init(window.FB);
                 }
-                window.FB.getLoginStatus(function(response) {
-                    if (response.status === 'connected') {
-                        self._info(el); // User logged into fb and app
-                    } else {
-                        window.FB.login(function(response) {
-                            if (response.status === 'connected') {
-                                self._info(el);
-                            } else {
-                                alert('Please allow access to your Facebook account, for us to enable direct login to the  DinchakApps');
-                            }
-                        }, {
-                            scope: 'public_profile, email'
-                        });
-                    }
-                });
+
+                if (!this.loggedIn) {
+                    window.FB.login(function(response) {
+                        if (response.status === 'connected') {
+                            self._info(el);
+                        } else {
+                            alert('Please allow access to your Facebook account, for us to enable direct login to the  DinchakApps');
+                        }
+                    }, {
+                        scope: 'public_profile, email'
+                    });
+                } else {
+                    self._info(el); // User logged into fb and app
+                }
             },
             _info: function(el) {
                 var loginType = el.data('action'), extra;
