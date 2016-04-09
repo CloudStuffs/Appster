@@ -34,11 +34,13 @@ class Game extends Config {
         ));
         $view = $this->getActionView();
 
+        $domain = Meta::first(array("property = ?" => "domain", "live = ?" => true));
         $items = Participant::all(array(), array("DISTINCT campaign_id"), "created", "desc", 3, 1);
+        
         $view->set("items", $items);
-
         $view->set("campaign", $campaign);
         $view->set("participant", $participant);
+        $view->set("domain", $domain);
     }
 
     /**

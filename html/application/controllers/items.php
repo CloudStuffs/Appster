@@ -34,4 +34,50 @@ class Items extends Admin {
 		}
 		$this->redirect($_SERVER['HTTP_REFERER']);
 	}
+
+	/**
+     * @before _secure, changeLayout, _admin
+     */
+	public function domains() {
+		$this->seo(array("title" => "Domains", "view" => $this->getLayoutView()));
+		$view = $this->getActionView();
+
+		if (RequestMethods::post("action") == "domain") {
+			$p = Registry::get("MongoDB")->domains;
+			$domain = new Meta(array(
+			    "user_id" => $this->user->id,
+			    "property" => "domain",
+			    "value" => RequestMethods::post("domain")
+			));
+			$domain->save();
+			$p->insert(array(
+				'domain' => $domain->value
+            ));
+			$view->set("message", "Domain Added Successfully");
+		}
+
+		$domains = Meta::all(array("property=?" => "domain"));
+		$view->set("domains", $domains);
+	}
+
+	/**
+     * @before _secure, changeLayout, _admin
+     */
+	public function fbapps() {
+		$this->seo(array("title" => "FBApps", "view" => $this->getLayoutView()));
+		$view = $this->getActionView();
+
+		if (RequestMethods::post("action") == "fbapps") {
+			$fbapp = new Meta(array(
+			    "user_id" => $this->user->id,
+			    "property" => "fbapp",
+			    "value" => RequestMethods::post("fbapp")
+			));
+			$fbapp->save();
+			$view->set("message", "FBApp Added Successfully");
+		}
+
+		$fbapps = Meta::all(array("property=?" => "fbapp"));
+		$view->set("fbapps", $fbapps);
+	}
 }

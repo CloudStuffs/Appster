@@ -201,6 +201,15 @@ namespace Shared {
                 Registry::set("MongoDB", $mongoDB);
             }
 
+            $session = Registry::get("session");
+            $fbapp = $session->get("fbapp");
+            if (!$fbapp) {
+                $fbapp = \Meta::first(array("property = ?" => "fbapp"))->value;
+                $session->set("fbapp", $fbapp);
+            }
+
+            $this->getLayoutView()->set("fbapp", $fbapp);
+
             // schedule: load user from session           
             Events::add("framework.router.beforehooks.before", function($name, $parameters) {
                 $session = Registry::get("session");
