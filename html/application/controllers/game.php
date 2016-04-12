@@ -25,13 +25,19 @@ class Game extends Config {
 
     public function result($participant_id) {
         $participant = Participant::first(array("id = ?" => $participant_id));
+        $user = User::first(array("id = ?" => $participant->user_id), array("name"));
         $campaign = Campaign::first(array("id = ?" => $participant->campaign_id));
+        $image = CDN . "uploads/images/" .$participant->image;
+        $info = getimagesize(APP_PATH . "/public/assets/uploads/images/" . $participant->image);
+
         $this->seo(array(
             "title" => $campaign->title, 
             "description" => $campaign->description,
-            "photo" => CDN . "uploads/images" .$participant->image,
+            "photo" => $image,
             "view" => $this->getLayoutView()
         ));
+        $this->layoutView->set("width", $info[0])
+                        ->set("height", $info[1]);
         $view = $this->getActionView();
 
         $domain = Meta::first(array("property = ?" => "domain", "live = ?" => true));
@@ -132,6 +138,10 @@ class Game extends Config {
         }
 
         $participant = Participant::first(array("user_id = ?" => $this->user->id, "campaign_id = ?" => $campaign->id));
+        $facebook = new Curl();
+        $facebook->post('https://graph.facebook.com/?id='. "http://". $_SERVER["HTTP_HOST"] ."/game/result/".$participant->id. '&scrape=true');
+        $facebook->close();
+        
         $items = Participant::all(array(), array("DISTINCT campaign_id"), "created", "desc", 3, 1);
         $view->set("items", $items);
         $view->set("img", $img);

@@ -70,22 +70,12 @@ document.addEventListener("DOMContentLoaded", function() {
 (function (window, $) {
     var FbModel = (function () {
         function FbModel() {
-            this.loaded = false;
             this.loggedIn = false;
         }
 
         FbModel.prototype = {
-            init: function(FB) {
-                if (!FB) {
-                    return false;
-                }
-
-                FB.init({
-                    appId: '179747022387337',
-                    version: 'v2.5'
-                });
-                this.loaded = true; var self = this;
-
+            init: function() {
+                var self = this;
                 FB.getLoginStatus(function (response) {
                     if (response.status === 'connected') {
                         self.loggedIn = true;
@@ -159,7 +149,13 @@ document.addEventListener("DOMContentLoaded", function() {
 
 $(document).ready(function() {
     $.ajaxSetup({cache: true});
-    $.getScript('//connect.facebook.net/en_US/sdk.js', FbModel.init(window.FB));
+    $.getScript('//connect.facebook.net/en_US/sdk.js', function () {
+        FB.init({
+            appId: '179747022387337',
+            version: 'v2.5'
+        });
+        window.FbModel.init();
+    });
 
     $(".fbLogin").on("click", function(e) {
         e.preventDefault();
