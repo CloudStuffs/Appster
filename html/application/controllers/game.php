@@ -142,10 +142,12 @@ class Game extends Config {
         $facebook->post('https://graph.facebook.com/?id='. "http://". $_SERVER["HTTP_HOST"] ."/game/result/".$participant->id. '&scrape=true');
         $facebook->close();
         
+        $domain = Meta::first(array("property = ?" => "domain", "live = ?" => true));
         $items = Participant::all(array(), array("DISTINCT campaign_id"), "created", "desc", 3, 1);
         $view->set("items", $items);
         $view->set("img", $img);
         $view->set("participant", $participant);
-        $view->set("campaign", $campaign);
+        $view->set("campaign", $campaign)
+            ->set("domain", $domain);
     }
 }
