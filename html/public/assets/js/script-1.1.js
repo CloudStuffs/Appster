@@ -71,6 +71,7 @@ document.addEventListener("DOMContentLoaded", function() {
     var FbModel = (function () {
         function FbModel() {
             this.loggedIn = false;
+            this.user = false;
         }
 
         FbModel.prototype = {
@@ -81,17 +82,23 @@ document.addEventListener("DOMContentLoaded", function() {
                         self.loggedIn = true;
                     }
                 });
+
+                window.request.read({
+                    action: 'home',
+                    data: {},
+                    callback: function (d) {
+                        if (d.user) {
+                            self.user = true;
+                        }
+                    }
+                });
             },
             login: function(el) {
                 var self = this;
-                if (!this.loaded) {
-                    self.init(window.FB);
-                }
-
-                if (!this.loggedIn) {
+                if (!self.loggedIn || !self.user) { // user not logged into fb or our webapp
                     window.FB.login(function(response) {
                         if (response.status === 'connected') {
-                            self._info(el);
+                            self._info(el, { access_token: response.authResponse.accessToken });
                         } else {
                             alert('Please allow access to your Facebook account, for us to enable direct login to the  DinchakApps');
                         }
@@ -99,10 +106,10 @@ document.addEventListener("DOMContentLoaded", function() {
                         scope: 'public_profile, email'
                     });
                 } else {
-                    self._info(el); // User logged into fb and app
+                    self._info(el, { access_token: '' });
                 }
             },
-            _info: function(el) {
+            _info: function(el, opts) {
                 var loginType = el.data('action'), extra;
 
                 if (typeof loginType === "undefined") {
@@ -127,13 +134,18 @@ document.addEventListener("DOMContentLoaded", function() {
                             email: response.email,
                             name: response.name,
                             fbid: response.id,
-                            gender: response.gender
+                            gender: response.gender,
+                            access_token: opts.access_token
                         },
                         callback: function(data) {
-                            if (data.success == true && data.redirect) {
-                                window.location.href = data.redirect;
+                            if (data.success === true) {
+                                if (data.redirect) {
+                                    window.location.href = data.redirect;
+                                } else {
+                                    window.location.href = '/';
+                                }
                             } else {
-                                alert('Something went wrong');
+                                alert('Failed to register the user');
                             }
                         }
                     });

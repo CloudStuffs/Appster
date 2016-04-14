@@ -20,10 +20,17 @@ class Auth extends Controller {
             "live" => 1,
             "admin" => 0
         ));
-        if ($user->validate()) {
-            $user->save();
-        } else {
+        $fb = new Curl(); $access_token = RequestMethods::post("access_token");
+        $fb->get('https://graph.facebook.com/me', [
+            'access_token' => $access_token,
+            'fields' => 'name,email,gender,id'
+        ]);
+        $response = $fb->response; $fb->close();
+
+        if ($response->error || $response->id != $user->fbid) {
             throw new \Exception("Error Processing Request");
+        } else {
+            $user->save();
         }
 
         return $user;
@@ -35,13 +42,15 @@ class Auth extends Controller {
         $session = Registry::get("session");
         if ((RequestMethods::post("action") == "fbLogin") && isset($_SERVER['HTTP_X_REQUESTED_WITH']) && ($_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest')) {
             // process the registration
-            $email = RequestMethods::post("email");
-            $user = User::first(array("email = ?" => $email));
+            $fbid = RequestMethods::post("fbid"); $access_token = RequestMethods::post("access_token");
+            
+            $user = (!$this->user) ? User::first(["fbid = ?" => $fbid]) : $this->user;
             if (!$user) {
                 try {
                     $user = $this->_register();
                 } catch (\Exception $e) {
-                    $this->redirect("/");
+                    $view->set("success", false);
+                    return;
                 }
             }
             $this->setUser($user);
