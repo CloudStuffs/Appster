@@ -39,6 +39,7 @@ class Image {
 
 	public static function resource($file) {
         $extension = pathinfo($file, PATHINFO_EXTENSION);
+        $extension = strtolower($extension);
         switch ($extension) {
             case 'png':
                 $res = imagecreatefrompng($file);
@@ -59,6 +60,7 @@ class Image {
 	 */
 	public static function create($resource, $file) {
 		$extension = pathinfo($file, PATHINFO_EXTENSION);
+		$extension = strtolower($extension);
         switch ($extension) {
             case 'png':
                 $res = imagepng($resource, $file);
